@@ -125,7 +125,7 @@ Si prefieres instalar PostgreSQL directamente en tu máquina:
 
 > Modelo de base de datos con las entidades del sistema, sus relaciones y cardinalidades.
 
-![Diagrama ER](docs/diagrama_er.png)
+![Diagrama ER](ternurines/docs/diagrama_er.png)
 
 **Entidades:** `cliente` · `veterinario` · `recepcionista` · `administrador` · `mascota` · `cita` · `servicio` · `historial_medico` · `tratamiento` · `medicamento` · `producto` · `adoptante` · `mascota_adopcion` 
 
