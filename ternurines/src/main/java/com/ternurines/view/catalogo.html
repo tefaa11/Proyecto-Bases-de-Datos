@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Ternurines — Catálogo de productos</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/jirafa.png">
+
+    <style>
+        :root {
+            --cream:#fbede0;
+            --salmon:#fac3a5;
+            --terracota:#e48368;
+            --brown:#b88566;
+            --olive:#ac9f7c;
+            --white:#ffffff;
+            --dark:#3d2b1f;
+            --text-mid:#7a5c4a;
+            --text-light:#b8977e;
+            --shadow:rgba(184,133,102,0.18);
+            --panel-bg1:#fdf3ea;
+            --panel-bg2:#f5dece;
+            --panel-bg3:#ecdcc8;
+            --navbar-h:64px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            min-height: 100%;
+            font-family: 'Nunito Sans', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+        }
+
+        body {
+            padding-top: var(--navbar-h);
+        }
+
+        .navbar-ternurines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--navbar-h);
+            background: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 36px;
+            z-index: 100;
+        }
+
+        .navbar-logo-img {
+            height: 46px;
+            object-fit: contain;
+        }
+
+        .navbar-logo-fallback {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 1.7rem;
+            color: var(--white);
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-logo-fallback span {
+            color: var(--terracota);
+        }
+
+        .navbar-recepcion {
+            color: rgba(255,255,255,0.75);
+            font-size: 0.86rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            user-select: none;
+        }
+
+        .catalog-wrapper {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            min-height: calc(100vh - var(--navbar-h));
+        }
+
+        .panel-left {
+            background: linear-gradient(155deg, var(--panel-bg1) 0%, var(--panel-bg2) 55%, var(--panel-bg3) 100%);
+            padding: 32px 26px;
+            position: sticky;
+            top: var(--navbar-h);
+            height: calc(100vh - var(--navbar-h));
+            overflow-y: auto;
+            border-right: 1px solid rgba(184,133,102,0.12);
+        }
+
+        .logo-img {
+            width: 118px;
+            height: 118px;
+            object-fit: contain;
+            margin-bottom: 14px;
+            filter: drop-shadow(0 8px 24px rgba(184,133,102,0.28));
+        }
+
+        .panel-left h1 {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 1.8rem;
+            line-height: 1.15;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .panel-left h1 span {
+            color: var(--terracota);
+        }
+
+        .subtitle {
+            color: var(--text-mid);
+            font-size: 0.88rem;
+            line-height: 1.65;
+            margin-bottom: 20px;
+        }
+
+        .filter-box,
+        .note-box {
+            background: rgba(255,255,255,0.78);
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: 0 8px 22px rgba(184,133,102,0.10);
+            margin-bottom: 14px;
+        }
+
+        .filter-box h3,
+        .note-box h3 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.98rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .filter-chip {
+            display: inline-block;
+            padding: 9px 12px;
+            border-radius: 999px;
+            background: var(--white);
+            color: var(--text-mid);
+            font-size: 0.78rem;
+            font-weight: 700;
+            margin: 0 8px 8px 0;
+        }
+
+        .note-box p {
+            color: var(--text-mid);
+            font-size: 0.83rem;
+            line-height: 1.6;
+        }
+
+        .panel-right {
+            padding: 30px 30px 34px;
+        }
+
+        .top-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+
+        .top-header-text small {
+            display: block;
+            color: var(--terracota);
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .top-header-text h2 {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 1.9rem;
+            line-height: 1.1;
+        }
+
+        .top-header-text p {
+            margin-top: 6px;
+            color: var(--text-light);
+            font-size: 0.88rem;
+        }
+
+        .search-box {
+            min-width: 260px;
+            max-width: 320px;
+            width: 100%;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 0.84rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            height: 46px;
+            border: 2px solid #f0e6de;
+            border-radius: 12px;
+            padding: 0 14px 0 40px;
+            background: var(--white);
+            font-family: 'Nunito Sans', sans-serif;
+            font-size: 0.88rem;
+            color: var(--dark);
+            outline: none;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(184,133,102,0.12);
+            border: 1px solid rgba(184,133,102,0.10);
+            transition: transform .22s, box-shadow .22s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 32px rgba(184,133,102,0.18);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 185px;
+            object-fit: cover;
+            display: block;
+            background: linear-gradient(135deg, #fff4ea, #f9dfcc);
+        }
+
+        .product-placeholder {
+            width: 100%;
+            height: 185px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            background: linear-gradient(135deg, #fff7f1, #f8e2d2);
+            color: var(--text-mid);
+            font-size: 0.84rem;
+            text-align: center;
+            padding: 16px;
+        }
+
+        .product-placeholder i {
+            font-size: 2rem;
+            color: var(--terracota);
+        }
+
+        .product-body {
+            padding: 15px 15px 16px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .product-tag {
+            display: inline-flex;
+            align-items: center;
+            align-self: flex-start;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: #fff3ec;
+            color: var(--terracota);
+            font-size: 0.72rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .product-title {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 1rem;
+            color: var(--dark);
+            line-height: 1.25;
+            margin-bottom: 6px;
+        }
+
+        .product-desc {
+            color: var(--text-mid);
+            font-size: 0.82rem;
+            line-height: 1.55;
+            margin-bottom: 12px;
+            flex: 1;
+        }
+
+        .product-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .meta-box {
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 9px 10px;
+        }
+
+        .meta-box small {
+            display: block;
+            color: var(--text-light);
+            font-size: 0.68rem;
+            margin-bottom: 2px;
+        }
+
+        .meta-box strong {
+            font-size: 0.82rem;
+            color: var(--dark);
+        }
+
+        .price-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .price {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--dark);
+        }
+
+        .buy-btn {
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--terracota), var(--brown));
+            color: var(--white);
+            padding: 11px 15px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(228,131,104,0.24);
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 1320px) {
+            .products-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .catalog-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .panel-left {
+                position: relative;
+                top: 0;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid rgba(184,133,102,0.12);
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 680px) {
+            .navbar-ternurines {
+                padding: 0 18px;
+            }
+
+            .panel-left,
+            .panel-right {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-header {
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar-ternurines">
+        <a href="index.html">
+            <img
+                src="img/navbar_logo.png"
+                class="navbar-logo-img"
+                onerror="this.style.display='none';document.getElementById('nf').style.display='block';"
+                alt="Ternurines"
+            >
+            <span id="nf" style="display:none;" class="navbar-logo-fallback">
+                <span>Ternu</span>rines
+            </span>
+        </a>
+
+        <div class="navbar-recepcion">
+            <i class="fas fa-shopping-bag"></i> Catálogo
+        </div>
+    </nav>
+
+    <div class="catalog-wrapper">
+        <aside class="panel-left">
+                      <div id="le" style="display:none;font-size:90px;margin-bottom:12px;">🦒</div>
+
+            <h1>Encuentra productos para el bienestar de <span>tu mascota</span></h1>
+            <p class="subtitle">
+                Explora alimentos, higiene, accesorios y suplementos pensados para acompañar el cuidado diario de tu compañero.
+            </p>
+
+            <div class="filter-box">
+                <h3>Categorías destacadas</h3>
+                <span class="filter-chip">Alimentos</span>
+                <span class="filter-chip">Higiene</span>
+                <span class="filter-chip">Juguetes</span>
+                <span class="filter-chip">Accesorios</span>
+                <span class="filter-chip">Suplementos</span>
+                <span class="filter-chip">Cuidado oral</span>
+            </div>
+
+            <div class="note-box">
+                <h3>Compra fácil</h3>
+                <p>
+                    Revisa la información básica de cada producto y usa el botón comprar para continuar con tu pedido.
+                </p>
+            </div>
+
+            </aside>
+
+        <main class="panel-right">
+            <div class="top-header">
+                <div class="top-header-text">
+                    <small>Tienda Ternurines</small>
+                    <h2>Catálogo de productos</h2>
+                    <p>Selecciona el producto que más te guste y continúa con la compra.</p>
+                </div>
+
+                           </div>
+
+            <section class="products-grid">
+
+                <article class="product-card">
+                    <img src="img/producto1.jpg" alt="Concentrado Pro-Plan" class="product-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="product-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>producto1.jpg</span>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-tag"><i class="fas fa-drumstick-bite"></i> Alimento</div>
+                        <h3 class="product-title">Concentrado Pro-Plan 10 kg</h3>
+                        <p class="product-desc">Alimento balanceado para perros adultos, ideal para nutrición diaria y mantenimiento saludable.</p>
+                        <div class="product-meta">
+                            <div class="meta-box">
+                                <small>Presentación</small>
+                                <strong>Bolsa 10 kg</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Stock</small>
+                                <strong>50 unidades</strong>
+                            </div>
+                        </div>
+                        <div class="price-row">
+                            <div class="price">$60.000</div>
+                            <button class="buy-btn" type="button">Comprar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="product-card">
+                    <img src="img/producto2.jpg" alt="Shampoo antipulgas" class="product-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="product-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>producto2.jpg</span>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-tag"><i class="fas fa-soap"></i> Higiene</div>
+                        <h3 class="product-title">Shampoo antipulgas 250 ml</h3>
+                        <p class="product-desc">Limpieza suave con fórmula especializada para ayudar al control de pulgas y mantener el pelaje limpio.</p>
+                        <div class="product-meta">
+                            <div class="meta-box">
+                                <small>Contenido</small>
+                                <strong>250 ml</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Stock</small>
+                                <strong>20 unidades</strong>
+                            </div>
+                        </div>
+                        <div class="price-row">
+                            <div class="price">$15.000</div>
+                            <button class="buy-btn" type="button">Comprar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="product-card">
+                    <img src="img/producto3.jpg" alt="Arena sanitaria premium" class="product-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="product-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>producto3.jpg</span>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-tag"><i class="fas fa-cat"></i> Higiene</div>
+                        <h3 class="product-title">Arena sanitaria premium</h3>
+                        <p class="product-desc">Arena aglomerante de alta absorción, pensada para reducir olores y facilitar la limpieza diaria.</p>
+                        <div class="product-meta">
+                            <div class="meta-box">
+                                <small>Presentación</small>
+                                <strong>8 kg</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Stock</small>
+                                <strong>34 unidades</strong>
+                            </div>
+                        </div>
+                        <div class="price-row">
+                            <div class="price">$28.000</div>
+                            <button class="buy-btn" type="button">Comprar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="product-card">
+                    <img src="img/producto4.jpg" alt="Juguete mordedor" class="product-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="product-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>producto4.jpg</span>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-tag"><i class="fas fa-bone"></i> Juguete</div>
+                        <h3 class="product-title">Mordedor resistente</h3>
+                        <p class="product-desc">Juguete ideal para entretenimiento, estimulación y cuidado dental en perros medianos y grandes.</p>
+                        <div class="product-meta">
+                            <div class="meta-box">
+                                <small>Material</small>
+                                <strong>Caucho flexible</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Stock</small>
+                                <strong>18 unidades</strong>
+                            </div>
+                        </div>
+                        <div class="price-row">
+                            <div class="price">$22.000</div>
+                            <button class="buy-btn" type="button">Comprar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="product-card">
+                    <img src="img/producto5.jpg" alt="Collar ajustable" class="product-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="product-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>producto5.jpg</span>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-tag"><i class="fas fa-paw"></i> Accesorio</div>
+                        <h3 class="product-title">Collar ajustable clásico</h3>
+                        <p class="product-desc">Collar cómodo y resistente con ajuste seguro para el uso diario en paseos y actividades al aire libre.</p>
+                        <div class="product-meta">
+                            <div class="meta-box">
+                                <small>Talla</small>
+                                <strong>Mediana</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Stock</small>
+                                <strong>26 unidades</strong>
+                            </div>
+                        </div>
+                        <div class="price-row">
+                            <div class="price">$18.000</div>
+                            <button class="buy-btn" type="button">Comprar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="product-card">
+                    <img src="img/producto6.jpg" alt="Snack dental" class="product-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="product-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>producto6.jpg</span>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-tag"><i class="fas fa-tooth"></i> Cuidado oral</div>
+                        <h3 class="product-title">Snack dental premium</h3>
+                        <p class="product-desc">Premio funcional que ayuda a la limpieza dental y al control del mal aliento en perros adultos.</p>
+                        <div class="product-meta">
+                            <div class="meta-box">
+                                <small>Contenido</small>
+                                <strong>Paquete x 20</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Stock</small>
+                                <strong>40 unidades</strong>
+                            </div>
+                        </div>
+                        <div class="price-row">
+                            <div class="price">$19.000</div>
+                            <button class="buy-btn" type="button">Comprar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="product-card">
+                    <img src="img/producto7.jpg" alt="Suplemento vitamínico" class="product-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="product-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>producto7.jpg</span>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-tag"><i class="fas fa-capsules"></i> Suplemento</div>
+                        <h3 class="product-title">Suplemento vitamínico</h3>
+                        <p class="product-desc">Apoyo nutricional para fortalecer defensas, energía y vitalidad en distintas etapas de vida.</p>
+                        <div class="product-meta">
+                            <div class="meta-box">
+                                <small>Presentación</small>
+                                <strong>Frasco x 60</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Stock</small>
+                                <strong>15 unidades</strong>
+                            </div>
+                        </div>
+                        <div class="price-row">
+                            <div class="price">$32.000</div>
+                            <button class="buy-btn" type="button">Comprar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="product-card">
+                    <img src="img/producto8.jpg" alt="Cama acolchada" class="product-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="product-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>producto8.jpg</span>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-tag"><i class="fas fa-bed"></i> Descanso</div>
+                        <h3 class="product-title">Cama acolchada suave</h3>
+                        <p class="product-desc">Espacio cómodo y acogedor para el descanso diario de mascotas pequeñas y medianas.</p>
+                        <div class="product-meta">
+                            <div class="meta-box">
+                                <small>Tamaño</small>
+                                <strong>70 x 50 cm</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Stock</small>
+                                <strong>12 unidades</strong>
+                            </div>
+                        </div>
+                        <div class="price-row">
+                            <div class="price">$75.000</div>
+                            <button class="buy-btn" type="button">Comprar</button>
+                        </div>
+                    </div>
+                </article>
+
+            </section>
+        </main>
+    </div>
+
+</body>
+</html>

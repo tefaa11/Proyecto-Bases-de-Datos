@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Ternurines — Adopción de mascotas</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/jirafa.png">
+
+    <style>
+        :root {
+            --cream:#fbede0;
+            --salmon:#fac3a5;
+            --terracota:#e48368;
+            --brown:#b88566;
+            --olive:#ac9f7c;
+            --white:#ffffff;
+            --dark:#3d2b1f;
+            --text-mid:#7a5c4a;
+            --text-light:#b8977e;
+            --shadow:rgba(184,133,102,0.18);
+            --panel-bg1:#fdf3ea;
+            --panel-bg2:#f5dece;
+            --panel-bg3:#ecdcc8;
+            --navbar-h:64px;
+            --rose:#e88f8f;
+            --mint:#dce9d8;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            min-height: 100%;
+            font-family: 'Nunito Sans', sans-serif;
+            background: var(--cream);
+            color: var(--dark);
+        }
+
+        body {
+            padding-top: var(--navbar-h);
+        }
+
+        .navbar-ternurines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--navbar-h);
+            background: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 36px;
+            z-index: 100;
+        }
+
+        .navbar-logo-img {
+            height: 46px;
+            object-fit: contain;
+        }
+
+        .navbar-logo-fallback {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 1.7rem;
+            color: var(--white);
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-logo-fallback span {
+            color: var(--terracota);
+        }
+
+        .navbar-recepcion {
+            color: rgba(255,255,255,0.75);
+            font-size: 0.86rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            user-select: none;
+        }
+
+        .adoption-wrapper {
+            display: grid;
+            grid-template-columns: 330px 1fr;
+            min-height: calc(100vh - var(--navbar-h));
+        }
+
+        .panel-left {
+            background: linear-gradient(155deg, var(--panel-bg1) 0%, var(--panel-bg2) 55%, var(--panel-bg3) 100%);
+            padding: 32px 26px;
+            position: sticky;
+            top: var(--navbar-h);
+            height: calc(100vh - var(--navbar-h));
+            overflow-y: auto;
+            border-right: 1px solid rgba(184,133,102,0.12);
+        }
+
+        .logo-img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: 14px;
+            filter: drop-shadow(0 8px 24px rgba(184,133,102,0.28));
+        }
+
+        .panel-left h1 {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 1.82rem;
+            line-height: 1.14;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .panel-left h1 span {
+            color: var(--terracota);
+        }
+
+        .subtitle {
+            color: var(--text-mid);
+            font-size: 0.88rem;
+            line-height: 1.65;
+            margin-bottom: 18px;
+        }
+
+        .side-photo {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+            border-radius: 22px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 26px rgba(184,133,102,0.15);
+            background: linear-gradient(135deg, #fff5ec, #f4dacb);
+        }
+
+        .side-photo-placeholder {
+            width: 100%;
+            height: 210px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            border-radius: 22px;
+            margin-bottom: 16px;
+            text-align: center;
+            padding: 18px;
+            background: linear-gradient(135deg, #fff8f3, #f5dfd0);
+            color: var(--text-mid);
+            border: 2px dashed rgba(184,133,102,0.28);
+        }
+
+        .side-photo-placeholder i {
+            font-size: 2rem;
+            color: var(--terracota);
+        }
+
+        .info-box,
+        .steps-box {
+            background: rgba(255,255,255,0.80);
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: 0 8px 22px rgba(184,133,102,0.10);
+            margin-bottom: 14px;
+        }
+
+        .info-box h3,
+        .steps-box h3 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.98rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .info-box p,
+        .steps-box li {
+            color: var(--text-mid);
+            font-size: 0.83rem;
+            line-height: 1.6;
+        }
+
+        .steps-box ul {
+            list-style: none;
+        }
+
+        .steps-box li {
+            position: relative;
+            padding-left: 18px;
+            margin-bottom: 9px;
+        }
+
+        .steps-box li:last-child {
+            margin-bottom: 0;
+        }
+
+        .steps-box li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--terracota);
+        }
+
+        .panel-right {
+            padding: 30px 30px 34px;
+        }
+
+        .top-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 18px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+
+        .top-header-text small {
+            display: block;
+            color: var(--terracota);
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .top-header-text h2 {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 1.9rem;
+            line-height: 1.1;
+        }
+
+        .top-header-text p {
+            margin-top: 6px;
+            color: var(--text-light);
+            font-size: 0.88rem;
+        }
+
+        .search-box {
+            min-width: 260px;
+            max-width: 320px;
+            width: 100%;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 0.84rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            height: 46px;
+            border: 2px solid #f0e6de;
+            border-radius: 12px;
+            padding: 0 14px 0 40px;
+            background: var(--white);
+            font-family: 'Nunito Sans', sans-serif;
+            font-size: 0.88rem;
+            color: var(--dark);
+            outline: none;
+        }
+
+        .pets-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .pet-card {
+            background: var(--white);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(184,133,102,0.12);
+            border: 1px solid rgba(184,133,102,0.10);
+            transition: transform .22s, box-shadow .22s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pet-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 32px rgba(184,133,102,0.18);
+        }
+
+        .pet-img {
+            width: 100%;
+            height: 215px;
+            object-fit: cover;
+            display: block;
+            background: linear-gradient(135deg, #fff4ea, #f7dccd);
+        }
+
+        .pet-placeholder {
+            width: 100%;
+            height: 215px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            background: linear-gradient(135deg, #fff8f4, #f4ded2);
+            color: var(--text-mid);
+            font-size: 0.84rem;
+            text-align: center;
+            padding: 16px;
+        }
+
+        .pet-placeholder i {
+            font-size: 2rem;
+            color: var(--terracota);
+        }
+
+        .pet-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .pet-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .pet-name {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.08rem;
+            font-weight: 900;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+
+        .pet-badge {
+            padding: 7px 10px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .available {
+            background: #edf7ea;
+            color: #5c8a49;
+        }
+
+        .process {
+            background: #fff2e8;
+            color: #bf7d45;
+        }
+
+        .pet-desc {
+            color: var(--text-mid);
+            font-size: 0.82rem;
+            line-height: 1.55;
+            margin-bottom: 12px;
+        }
+
+        .pet-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .meta-box {
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 9px 10px;
+        }
+
+        .meta-box small {
+            display: block;
+            color: var(--text-light);
+            font-size: 0.68rem;
+            margin-bottom: 2px;
+        }
+
+        .meta-box strong {
+            font-size: 0.82rem;
+            color: var(--dark);
+        }
+
+        .pet-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .pet-health {
+            font-size: 0.8rem;
+            color: var(--text-mid);
+            font-weight: 700;
+        }
+
+        .adopt-btn {
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--terracota), var(--brown));
+            color: var(--white);
+            padding: 11px 15px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(228,131,104,0.24);
+        }
+
+        .adopt-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 1280px) {
+            .pets-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .adoption-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .panel-left {
+                position: relative;
+                top: 0;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid rgba(184,133,102,0.12);
+            }
+        }
+
+        @media (max-width: 720px) {
+            .navbar-ternurines {
+                padding: 0 18px;
+            }
+
+            .panel-left,
+            .panel-right {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .pets-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .top-header {
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar-ternurines">
+        <a href="index.html">
+            <img
+                src="img/navbar_logo.png"
+                class="navbar-logo-img"
+                onerror="this.style.display='none';document.getElementById('nf').style.display='block';"
+                alt="Ternurines"
+            >
+            <span id="nf" style="display:none;" class="navbar-logo-fallback">
+                <span>Ternu</span>rines
+            </span>
+        </a>
+
+        <div class="navbar-recepcion">
+            <i class="fas fa-heart"></i> Adopción
+        </div>
+    </nav>
+
+    <div class="adoption-wrapper">
+        <aside class="panel-left">
+            
+            <div id="le" style="display:none;font-size:90px;margin-bottom:12px;">🦒</div>
+
+            <h1>Encuentra un nuevo amigo para <span>tu hogar</span></h1>
+            <p class="subtitle">
+                Conoce mascotas que esperan una segunda oportunidad y descubre cuál puede convertirse en parte de tu familia.
+            </p>
+
+            <div id="adopcionFallback" class="side-photo-placeholder">
+                <i class="fas fa-camera"></i>
+                <strong>Aquí puedes poner tu imagen</strong>
+                <span>Guárdala como <b>adopcion_principal.jpg</b></span>
+            </div>
+
+            <div class="info-box">
+                <h3>Adoptar es dar amor</h3>
+                <p>
+                    Cada mascota disponible merece un espacio seguro, cariño y cuidados responsables. Aquí puedes conocer su información básica antes de iniciar el proceso.
+                </p>
+            </div>
+
+            <div class="steps-box">
+                <h3>Antes de adoptar</h3>
+                <ul>
+                    <li>Asegúrate de contar con tiempo y compromiso.</li>
+                    <li>Verifica que tu hogar sea adecuado para la mascota.</li>
+                    <li>Ten presente alimentación, salud y revisiones periódicas.</li>
+                    <li>Brinda un entorno estable, seguro y amoroso.</li>
+                </ul>
+            </div>
+        </aside>
+
+        <main class="panel-right">
+            <div class="top-header">
+                <div class="top-header-text">
+                    <small>Familias Ternurines</small>
+                    <h2>Mascotas en adopción</h2>
+                    <p>Explora los perfiles y da el primer paso para adoptar.</p>
+                </div>
+
+                            </div>
+
+            <section class="pets-grid">
+
+                <article class="pet-card">
+                    <img src="img/mascota1.jpg" alt="Rex" class="pet-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="pet-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>mascota1.jpg</span>
+                    </div>
+                    <div class="pet-body">
+                        <div class="pet-top">
+                            <h3 class="pet-name">Rex</h3>
+                            <span class="pet-badge available">Disponible</span>
+                        </div>
+                        <p class="pet-desc">Perro criollo muy activo, sociable y cariñoso. Ideal para familias que disfruten paseos y juegos al aire libre.</p>
+                        <div class="pet-meta">
+                            <div class="meta-box">
+                                <small>Especie</small>
+                                <strong>Perro</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Raza</small>
+                                <strong>Criollo</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Edad</small>
+                                <strong>1 año</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Ingreso</small>
+                                <strong>15/01/2024</strong>
+                            </div>
+                        </div>
+                        <div class="pet-footer">
+                            <span class="pet-health">Salud: Saludable</span>
+                            <button class="adopt-btn" type="button">Adoptar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="pet-card">
+                    <img src="img/mascota2.jpg" alt="Luna" class="pet-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="pet-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>mascota2.jpg</span>
+                    </div>
+                    <div class="pet-body">
+                        <div class="pet-top">
+                            <h3 class="pet-name">Luna</h3>
+                            <span class="pet-badge process">En proceso</span>
+                        </div>
+                        <p class="pet-desc">Gatita persa tranquila y tierna, perfecta para ambientes calmados y personas que busquen compañía serena.</p>
+                        <div class="pet-meta">
+                            <div class="meta-box">
+                                <small>Especie</small>
+                                <strong>Gato</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Raza</small>
+                                <strong>Persa</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Edad</small>
+                                <strong>4 años</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Ingreso</small>
+                                <strong>01/02/2024</strong>
+                            </div>
+                        </div>
+                        <div class="pet-footer">
+                            <span class="pet-health">Salud: Recuperación</span>
+                            <button class="adopt-btn" type="button">Adoptar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="pet-card">
+                    <img src="img/mascota3.jpg" alt="Milo" class="pet-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="pet-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>mascota3.jpg</span>
+                    </div>
+                    <div class="pet-body">
+                        <div class="pet-top">
+                            <h3 class="pet-name">Milo</h3>
+                            <span class="pet-badge available">Disponible</span>
+                        </div>
+                        <p class="pet-desc">Cachorro juguetón y curioso, con mucha energía y facilidad para adaptarse a nuevos espacios y rutinas.</p>
+                        <div class="pet-meta">
+                            <div class="meta-box">
+                                <small>Especie</small>
+                                <strong>Perro</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Raza</small>
+                                <strong>Mestizo</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Edad</small>
+                                <strong>8 meses</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Ingreso</small>
+                                <strong>20/03/2024</strong>
+                            </div>
+                        </div>
+                        <div class="pet-footer">
+                            <span class="pet-health">Salud: Saludable</span>
+                            <button class="adopt-btn" type="button">Adoptar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="pet-card">
+                    <img src="img/mascota4.jpg" alt="Nala" class="pet-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="pet-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>mascota4.jpg</span>
+                    </div>
+                    <div class="pet-body">
+                        <div class="pet-top">
+                            <h3 class="pet-name">Nala</h3>
+                            <span class="pet-badge available">Disponible</span>
+                        </div>
+                        <p class="pet-desc">Gatita joven, muy curiosa y afectuosa. Disfruta espacios cálidos, juegos suaves y compañía constante.</p>
+                        <div class="pet-meta">
+                            <div class="meta-box">
+                                <small>Especie</small>
+                                <strong>Gato</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Raza</small>
+                                <strong>Criolla</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Edad</small>
+                                <strong>2 años</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Ingreso</small>
+                                <strong>05/04/2024</strong>
+                            </div>
+                        </div>
+                        <div class="pet-footer">
+                            <span class="pet-health">Salud: Saludable</span>
+                            <button class="adopt-btn" type="button">Adoptar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="pet-card">
+                    <img src="img/mascota5.jpg" alt="Toby" class="pet-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="pet-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>mascota5.jpg</span>
+                    </div>
+                    <div class="pet-body">
+                        <div class="pet-top">
+                            <h3 class="pet-name">Toby</h3>
+                            <span class="pet-badge available">Disponible</span>
+                        </div>
+                        <p class="pet-desc">Perro de tamaño mediano, noble y obediente. Muy buen compañero para hogares con rutinas activas.</p>
+                        <div class="pet-meta">
+                            <div class="meta-box">
+                                <small>Especie</small>
+                                <strong>Perro</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Raza</small>
+                                <strong>Beagle mestizo</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Edad</small>
+                                <strong>3 años</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Ingreso</small>
+                                <strong>18/04/2024</strong>
+                            </div>
+                        </div>
+                        <div class="pet-footer">
+                            <span class="pet-health">Salud: En tratamiento</span>
+                            <button class="adopt-btn" type="button">Adoptar</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="pet-card">
+                    <img src="img/mascota6.jpg" alt="Coco" class="pet-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="pet-placeholder">
+                        <i class="fas fa-image"></i>
+                        <span>Sube aquí<br>mascota6.jpg</span>
+                    </div>
+                    <div class="pet-body">
+                        <div class="pet-top">
+                            <h3 class="pet-name">Coco</h3>
+                            <span class="pet-badge available">Disponible</span>
+                        </div>
+                        <p class="pet-desc">Ave de compañía tranquila, llamativa y sociable. Ideal para hogares atentos a su cuidado y rutina diaria.</p>
+                        <div class="pet-meta">
+                            <div class="meta-box">
+                                <small>Especie</small>
+                                <strong>Ave</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Raza</small>
+                                <strong>Loro</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Edad</small>
+                                <strong>2 años</strong>
+                            </div>
+                            <div class="meta-box">
+                                <small>Ingreso</small>
+                                <strong>12/05/2024</strong>
+                            </div>
+                        </div>
+                        <div class="pet-footer">
+                            <span class="pet-health">Salud: Saludable</span>
+                            <button class="adopt-btn" type="button">Adoptar</button>
+                        </div>
+                    </div>
+                </article>
+
+            </section>
+        </main>
+    </div>
+
+</body>
+</html>
