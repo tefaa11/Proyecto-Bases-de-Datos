@@ -17,39 +17,63 @@ public class AdopcionController {
         this.adopcionRepository = adopcionRepository;
     }
 
+    // GET LISTA
     @GetMapping
-    public List<Adopcion> findAll() {
-        return adopcionRepository.findAll();
+    public ResponseEntity<List<Adopcion>> findAll() {
+        return ResponseEntity.ok(adopcionRepository.findAll());
     }
 
+    // GET POR ID
     @GetMapping("/{idAdoptante}/{idMascotaAdopcion}")
-    public ResponseEntity<Adopcion> findById(@PathVariable int idAdoptante,
-                                             @PathVariable int idMascotaAdopcion) {
+    public ResponseEntity<Adopcion> findById(
+            @PathVariable int idAdoptante,
+            @PathVariable int idMascotaAdopcion) {
+
         return adopcionRepository.findById(idAdoptante, idMascotaAdopcion)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // POST -> 201 CREATED
     @PostMapping
-    public ResponseEntity<String> save(@RequestBody Adopcion adopcion) {
-        int rows = adopcionRepository.save(adopcion);
-        return ResponseEntity.ok("Filas insertadas: " + rows);
+    public ResponseEntity<Adopcion> save(@RequestBody Adopcion adopcion) {
+
+        adopcionRepository.save(adopcion);
+
+        return ResponseEntity.status(201).body(adopcion);
     }
 
+    // PUT -> 200 OK o 404
     @PutMapping("/{idAdoptante}/{idMascotaAdopcion}")
-    public ResponseEntity<String> update(@PathVariable int idAdoptante,
-                                         @PathVariable int idMascotaAdopcion,
-                                         @RequestBody Adopcion adopcion) {
+    public ResponseEntity<Adopcion> update(
+            @PathVariable int idAdoptante,
+            @PathVariable int idMascotaAdopcion,
+            @RequestBody Adopcion adopcion) {
+
         adopcion.setIdAdoptante(idAdoptante);
         adopcion.setIdMascotaAdopcion(idMascotaAdopcion);
+
         int rows = adopcionRepository.update(adopcion);
-        return ResponseEntity.ok("Filas actualizadas: " + rows);
+
+        if (rows == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(adopcion);
     }
 
+    // DELETE -> 204 NO CONTENT
     @DeleteMapping("/{idAdoptante}/{idMascotaAdopcion}")
-    public ResponseEntity<String> delete(@PathVariable int idAdoptante,
-                                         @PathVariable int idMascotaAdopcion) {
+    public ResponseEntity<Void> delete(
+            @PathVariable int idAdoptante,
+            @PathVariable int idMascotaAdopcion) {
+
         int rows = adopcionRepository.delete(idAdoptante, idMascotaAdopcion);
-        return ResponseEntity.ok("Filas eliminadas: " + rows);
+
+        if (rows == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }

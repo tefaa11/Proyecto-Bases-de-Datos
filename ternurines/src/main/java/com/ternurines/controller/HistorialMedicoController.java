@@ -18,33 +18,52 @@ public class HistorialMedicoController {
     }
 
     @GetMapping
-    public List<HistorialMedico> findAll() {
-        return historialMedicoRepository.findAll();
+    public ResponseEntity<List<HistorialMedico>> findAll() {
+        return ResponseEntity.ok(historialMedicoRepository.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<HistorialMedico> findById(@PathVariable int id) {
+
         return historialMedicoRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<String> save(@RequestBody HistorialMedico historialMedico) {
-        int rows = historialMedicoRepository.save(historialMedico);
-        return ResponseEntity.ok("Filas insertadas: " + rows);
+    public ResponseEntity<HistorialMedico> save(
+            @RequestBody HistorialMedico historialMedico) {
+
+        historialMedicoRepository.save(historialMedico);
+
+        return ResponseEntity.status(201).body(historialMedico);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable int id, @RequestBody HistorialMedico historialMedico) {
+    public ResponseEntity<HistorialMedico> update(
+            @PathVariable int id,
+            @RequestBody HistorialMedico historialMedico) {
+
         historialMedico.setIdHistorial(id);
+
         int rows = historialMedicoRepository.update(historialMedico);
-        return ResponseEntity.ok("Filas actualizadas: " + rows);
+
+        if (rows == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(historialMedico);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@PathVariable int id) {
+
         int rows = historialMedicoRepository.delete(id);
-        return ResponseEntity.ok("Filas eliminadas: " + rows);
+
+        if (rows == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }

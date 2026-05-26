@@ -18,33 +18,52 @@ public class MascotaAdopcionController {
     }
 
     @GetMapping
-    public List<MascotaAdopcion> findAll() {
-        return mascotaAdopcionRepository.findAll();
+    public ResponseEntity<List<MascotaAdopcion>> findAll() {
+        return ResponseEntity.ok(mascotaAdopcionRepository.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MascotaAdopcion> findById(@PathVariable int id) {
+
         return mascotaAdopcionRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<String> save(@RequestBody MascotaAdopcion mascotaAdopcion) {
-        int rows = mascotaAdopcionRepository.save(mascotaAdopcion);
-        return ResponseEntity.ok("Filas insertadas: " + rows);
+    public ResponseEntity<MascotaAdopcion> save(
+            @RequestBody MascotaAdopcion mascotaAdopcion) {
+
+        mascotaAdopcionRepository.save(mascotaAdopcion);
+
+        return ResponseEntity.status(201).body(mascotaAdopcion);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable int id, @RequestBody MascotaAdopcion mascotaAdopcion) {
+    public ResponseEntity<MascotaAdopcion> update(
+            @PathVariable int id,
+            @RequestBody MascotaAdopcion mascotaAdopcion) {
+
         mascotaAdopcion.setIdMascotaAdopcion(id);
+
         int rows = mascotaAdopcionRepository.update(mascotaAdopcion);
-        return ResponseEntity.ok("Filas actualizadas: " + rows);
+
+        if (rows == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(mascotaAdopcion);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@PathVariable int id) {
+
         int rows = mascotaAdopcionRepository.delete(id);
-        return ResponseEntity.ok("Filas eliminadas: " + rows);
+
+        if (rows == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }

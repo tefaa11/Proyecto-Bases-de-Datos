@@ -18,33 +18,52 @@ public class RecepcionistaController {
     }
 
     @GetMapping
-    public List<Recepcionista> findAll() {
-        return recepcionistaRepository.findAll();
+    public ResponseEntity<List<Recepcionista>> findAll() {
+        return ResponseEntity.ok(recepcionistaRepository.findAll());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Recepcionista> findById(@PathVariable int id) {
+
         return recepcionistaRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<String> save(@RequestBody Recepcionista recepcionista) {
-        int rows = recepcionistaRepository.save(recepcionista);
-        return ResponseEntity.ok("Filas insertadas: " + rows);
+    public ResponseEntity<Recepcionista> save(
+            @RequestBody Recepcionista recepcionista) {
+
+        recepcionistaRepository.save(recepcionista);
+
+        return ResponseEntity.status(201).body(recepcionista);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable int id, @RequestBody Recepcionista recepcionista) {
+    public ResponseEntity<Recepcionista> update(
+            @PathVariable int id,
+            @RequestBody Recepcionista recepcionista) {
+
         recepcionista.setIdRecepcionista(id);
+
         int rows = recepcionistaRepository.update(recepcionista);
-        return ResponseEntity.ok("Filas actualizadas: " + rows);
+
+        if (rows == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(recepcionista);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@PathVariable int id) {
+
         int rows = recepcionistaRepository.delete(id);
-        return ResponseEntity.ok("Filas eliminadas: " + rows);
+
+        if (rows == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }
