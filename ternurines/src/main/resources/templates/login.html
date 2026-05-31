@@ -1,608 +1,214 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="utf-8">
-    <title>Ternurines — Iniciar Sesión</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Inicia sesión en Ternurines — Gestiona citas, historiales y el cuidado de tus mascotas.">
+    <title>Ternurines — Iniciar sesión</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../static/img/jirafa.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="img/jirafa.png">
 
-    <style>
-        :root {
-            --cream:     #fbede0;
-            --salmon:    #fac3a5;
-            --terracota: #e48368;
-            --brown:     #b88566;
-            --olive:     #ac9f7c;
-            --white:     #ffffff;
-            --dark:      #3d2b1f;
-            --text-mid:  #7a5c4a;
-            --text-light:#b8977e;
-            --shadow:    rgba(184,133,102,0.18);
-            --panel-bg1: #fdf3ea;
-            --panel-bg2: #f5dece;
-            --panel-bg3: #ecdcc8;
-            --navbar-h:  64px;
-        }
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        html, body {
-            height: 100%;
-            overflow: hidden; /* sin scroll global */
-            font-family: 'Nunito Sans', sans-serif;
-            background: var(--cream);
-        }
-
-        /* ══════════════════════════════
-           NAVBAR
-        ══════════════════════════════ */
-        .navbar-ternurines {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: var(--navbar-h);
-            background: var(--dark);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 36px;
-            z-index: 100;
-        }
-
-        .navbar-logo-img {
-            height: 46px;
-            object-fit: contain;
-        }
-        .navbar-logo-fallback {
-            font-family: 'Nunito', sans-serif;
-            font-weight: 900;
-            font-size: 1.7rem;
-            color: var(--white);
-            letter-spacing: -0.5px;
-        }
-        .navbar-logo-fallback span { color: var(--terracota); }
-
-        .navbar-recepcion {
-            position: relative;
-            color: rgba(255,255,255,0.75);
-            font-size: 0.86rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            transition: color .2s;
-            user-select: none;
-        }
-        .navbar-recepcion:hover { color: var(--salmon); }
-        .phone-tooltip {
-            display: none;
-            position: absolute;
-            top: calc(100% + 12px);
-            right: 0;
-            background: var(--dark);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 10px;
-            padding: 10px 18px;
-            white-space: nowrap;
-            font-size: 0.88rem;
-            color: var(--salmon);
-            font-weight: 700;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-        }
-        .phone-tooltip::before {
-            content: '';
-            position: absolute;
-            top: -6px; right: 16px;
-            width: 10px; height: 10px;
-            background: var(--dark);
-            border-left: 1px solid rgba(255,255,255,0.15);
-            border-top: 1px solid rgba(255,255,255,0.15);
-            transform: rotate(45deg);
-        }
-        .navbar-recepcion:hover .phone-tooltip { display: block; }
-
-        /* ══════════════════════════════
-           LAYOUT — ocupa exactamente la pantalla
-        ══════════════════════════════ */
-        .login-wrapper {
-            display: flex;
-            position: fixed;
-            top: var(--navbar-h);
-            left: 0; right: 0; bottom: 0;
-            overflow: hidden;
-        }
-
-        /* ══════════════════════════════
-           PANEL IZQUIERDO
-        ══════════════════════════════ */
-        .panel-left {
-            flex: 1;
-            background: linear-gradient(155deg, var(--panel-bg1) 0%, var(--panel-bg2) 55%, var(--panel-bg3) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px 36px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .panel-left::before {
-            content: '';
-            position: absolute;
-            width: 460px; height: 460px;
-            border-radius: 50%;
-            background: rgba(228,131,104,0.07);
-            top: -160px; left: -160px;
-            pointer-events: none;
-        }
-        .panel-left::after {
-            content: '';
-            position: absolute;
-            width: 300px; height: 300px;
-            border-radius: 50%;
-            background: rgba(172,159,124,0.08);
-            bottom: -90px; right: -90px;
-            pointer-events: none;
-        }
-
-        .panel-left-content {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            width: 100%;
-            max-width: 560px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* Logo */
-        .logo-img {
-            width: 160px;
-            height: 160px;
-            object-fit: contain;
-            filter: drop-shadow(0 8px 24px rgba(184,133,102,0.28));
-            margin-bottom: 12px;
-            animation: floatLogo 3.5s ease-in-out infinite;
-            flex-shrink: 0;
-        }
-        @keyframes floatLogo {
-            0%, 100% { transform: translateY(0); }
-            50%       { transform: translateY(-10px); }
-        }
-
-        .panel-left h1 {
-            font-family: 'Nunito', sans-serif;
-            font-weight: 900;
-            font-size: 1.9rem;
-            color: var(--dark);
-            line-height: 1.2;
-            margin-bottom: 6px;
-        }
-        .panel-left h1 span { color: var(--terracota); }
-
-        .subtitle {
-            color: var(--text-mid);
-            font-size: 0.88rem;
-            line-height: 1.55;
-            max-width: 360px;
-            margin: 0 auto 18px;
-        }
-
-        /* Etiqueta servicios */
-        .services-title {
-            font-family: 'Nunito', sans-serif;
-            font-weight: 800;
-            font-size: 0.68rem;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            color: var(--terracota);
-            margin-bottom: 12px;
-        }
-
-        /* Grid de tarjetas */
-        .services-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            width: 100%;
-        }
-
-        .service-card {
-            background: var(--white);
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 3px 14px rgba(184,133,102,0.14);
-            text-align: left;
-            transition: transform .22s, box-shadow .22s;
-        }
-        .service-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 22px rgba(184,133,102,0.20);
-        }
-
-        .service-card-img {
-            width: 100%;
-            height: 80px;
-            object-fit: cover;
-            display: block;
-        }
-        .service-card-img-placeholder {
-            width: 100%;
-            height: 80px;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-        }
-
-        .service-card-body {
-            padding: 9px 11px 11px;
-            display: flex;
-            align-items: flex-start;
-            gap: 9px;
-        }
-        .service-card-icon {
-            width: 28px; height: 28px;
-            border-radius: 7px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.82rem;
-            color: var(--white);
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-        .service-card-info { flex: 1; min-width: 0; }
-        .service-card-title {
-            font-family: 'Nunito', sans-serif;
-            font-weight: 800;
-            font-size: 0.8rem;
-            color: var(--dark);
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .service-card-desc {
-            font-size: 0.7rem;
-            color: var(--text-light);
-            line-height: 1.4;
-        }
-
-        .ic-citas       { background: var(--terracota); }
-        .ic-historial   { background: var(--brown); }
-        .ic-tratamiento { background: var(--olive); }
-        .ic-adopcion    { background: #e07a7a; }
-        .ph-citas       { background: linear-gradient(135deg,#fde8df,#fac3a5); }
-        .ph-historial   { background: linear-gradient(135deg,#f5e6d8,#e8cdb8); }
-        .ph-tratamiento { background: linear-gradient(135deg,#e8ebd8,#d4d8b8); }
-        .ph-adopcion    { background: linear-gradient(135deg,#fde0e0,#f8c4c4); }
-
-        /* ══════════════════════════════
-           PANEL DERECHO
-        ══════════════════════════════ */
-        .panel-right {
-            width: 420px;
-            min-width: 420px;
-            background: var(--white);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 36px 40px;
-            box-shadow: -8px 0 40px var(--shadow);
-            overflow-y: auto;
-        }
-
-        .form-header { margin-bottom: 22px; }
-        .welcome {
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-            color: var(--terracota);
-            margin-bottom: 6px;
-        }
-        .form-header h2 {
-            font-family: 'Nunito', sans-serif;
-            font-weight: 900;
-            font-size: 1.75rem;
-            color: var(--dark);
-            line-height: 1.2;
-            margin-bottom: 6px;
-        }
-        .form-header p {
-            font-size: 0.84rem;
-            color: var(--text-light);
-        }
-
-        /* Divider */
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-        .divider hr { flex: 1; border-color: #f0e6de; margin: 0; }
-        .divider span {
-            font-size: 0.72rem;
-            color: var(--text-light);
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        /* Tabs rol */
-        .rol-tabs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 7px;
-            margin-bottom: 20px;
-        }
-        .rol-tab {
-            background: var(--cream);
-            border: 2px solid transparent;
-            border-radius: 11px;
-            padding: 9px 8px;
-            cursor: pointer;
-            text-align: center;
-            transition: all .18s;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 700;
-            font-size: 0.78rem;
-            color: var(--text-mid);
-        }
-        .rol-tab i { display: block; font-size: 1.1rem; margin-bottom: 3px; color: var(--brown); }
-        .rol-tab:hover { border-color: var(--salmon); background: #fff5f0; }
-        .rol-tab.active { background: #fff5f0; border-color: var(--terracota); color: var(--terracota); }
-        .rol-tab.active i { color: var(--terracota); }
-
-        /* Inputs */
-        .form-label {
-            font-family: 'Nunito', sans-serif;
-            font-weight: 700;
-            font-size: 0.78rem;
-            color: var(--dark);
-            margin-bottom: 5px;
-            display: block;
-        }
-        .input-group-custom { position: relative; margin-bottom: 16px; }
-        .input-icon {
-            position: absolute; left: 14px; top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-light); font-size: 0.85rem;
-            pointer-events: none; z-index: 2;
-        }
-        .form-control-custom {
-            width: 100%; height: 46px;
-            border: 2px solid #f0e6de; border-radius: 11px;
-            padding: 0 44px 0 40px;
-            font-family: 'Nunito Sans', sans-serif;
-            font-size: 0.88rem; color: var(--dark);
-            background: var(--cream); outline: none;
-            transition: border-color .2s, background .2s, box-shadow .2s;
-        }
-        .form-control-custom::placeholder { color: var(--text-light); }
-        .form-control-custom:focus {
-            border-color: var(--terracota);
-            background: #fff5f0;
-            box-shadow: 0 0 0 3px rgba(228,131,104,0.12);
-        }
-        .toggle-password {
-            position: absolute; right: 12px; top: 50%;
-            transform: translateY(-50%);
-            background: none; border: none;
-            color: var(--text-light); cursor: pointer;
-            padding: 4px; font-size: 0.85rem;
-            transition: color .2s; z-index: 2;
-        }
-        .toggle-password:hover { color: var(--terracota); }
-
-        /* Olvidé */
-        .form-footer-row {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 18px;
-        }
-        .forgot-link {
-            font-size: 0.78rem; color: var(--terracota);
-            font-weight: 700; text-decoration: none; transition: color .2s;
-        }
-        .forgot-link:hover { color: var(--brown); text-decoration: underline; }
-
-        /* Botón */
-        .btn-login {
-            width: 100%; height: 48px;
-            background: linear-gradient(135deg, var(--terracota), var(--brown));
-            border: none; border-radius: 12px;
-            color: var(--white);
-            font-family: 'Nunito', sans-serif;
-            font-weight: 800; font-size: 0.95rem;
-            cursor: pointer; transition: all .22s;
-            box-shadow: 0 4px 18px rgba(228,131,104,0.32);
-            display: flex; align-items: center; justify-content: center; gap: 9px;
-        }
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 24px rgba(228,131,104,0.42);
-        }
-        .btn-login:active { transform: none; }
-
-        .contact-hint {
-            display: flex; align-items: center; justify-content: center;
-            gap: 7px; margin-top: 12px; padding: 10px 14px;
-            background: var(--cream); border-radius: 9px;
-            font-size: 0.76rem; color: var(--text-mid);
-        }
-        .contact-hint i { color: var(--terracota); }
-    </style>
+    <!-- Estilos compartidos (incluye sección login) -->
+    <link href="../static/css/style.css" rel="stylesheet">
 </head>
-<body>
+<!-- .page-login activa los overrides de layout para esta página -->
+<body class="page-login">
 
-    <!-- NAVBAR -->
-    <nav class="navbar-ternurines">
-        <a href="index.html">
-        <img
-            src="img/navbar_logo.png"
-            class="navbar-logo-img"
-            onerror="this.style.display='none';document.getElementById('nf').style.display='block';"
-            alt="Ternurines"
-        >
-        <span id="nf" style="display:none;" class="navbar-logo-fallback">
-            <span>Ternu</span>rines
-        </span>
-    </a>
-        <div class="navbar-recepcion">
-            <i class="fas fa-phone-alt"></i> Recepción
-            <div class="phone-tooltip">
-                <i class="fas fa-phone-alt" style="margin-right:8px;"></i>+57 314 341 1511
+    <!-- ══════ NAVBAR ══════ -->
+    <nav class="navbar-ternurines" role="navigation" aria-label="Navegación principal">
+        <a href="index.html" aria-label="Ternurines — Volver al inicio">
+            <img src="../static/img/navbar_logo.png"
+                 class="navbar-logo-img"
+                 alt="Logo Ternurines">
+        </a>
+
+        <div class="navbar-recepcion" aria-label="Teléfono de recepción">
+            <i class="fas fa-phone-alt" aria-hidden="true"></i> Recepción
+            <div class="phone-tooltip" role="tooltip">
+                <i class="fas fa-phone-alt" aria-hidden="true" style="margin-right:8px;"></i>+57 314 341 1511
             </div>
         </div>
     </nav>
 
-    <!-- LAYOUT -->
+    <!-- ══════ LAYOUT ══════ -->
     <div class="login-wrapper">
 
-        <!-- PANEL IZQUIERDO -->
+        <!-- ── PANEL IZQUIERDO ── -->
         <div class="panel-left">
             <div class="panel-left-content">
 
-                <img src="img/Logo_Ternurines.png" class="logo-img" alt="Ternurines"
-                     onerror="this.style.display='none';document.getElementById('le').style.display='block';">
-                <div id="le" style="display:none;font-size:110px;margin-bottom:12px;animation:floatLogo 3.5s ease-in-out infinite;">🦒</div>
+                <img src="../static/img/Logo_Ternurines.png"
+                     class="logo-img"
+                     alt="Logo Ternurines">
 
                 <h1>Tu mascota<br><span>merece lo mejor</span></h1>
                 <p class="subtitle">Gestiona citas, historiales clínicos y el cuidado integral de tus mascotas desde un solo lugar.</p>
 
                 <p class="services-title">Nuestros servicios</p>
-                <div class="services-grid">
 
-                    <div class="service-card">
-                        <img src="img/servicio_citas.jpg" class="service-card-img" alt="Citas"
-                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                        <div class="service-card-img-placeholder ph-citas">🗓️</div>
-                        <div class="service-card-body">
-                            <div class="service-card-icon ic-citas"><i class="fas fa-calendar-check"></i></div>
-                            <div class="service-card-info">
-                                <div class="service-card-title">Citas médicas</div>
-                                <div class="service-card-desc">Agenda consultas veterinarias fácilmente.</div>
+                <div class="login-services-grid">
+
+                    <article class="login-service-card">
+                        <img src="../static/img/servicio_citas.jpg"
+                             class="login-service-card-img"
+                             alt="Citas médicas">
+                        <div class="login-service-card-img-placeholder ph-citas" aria-hidden="true">🗓️</div>
+                        <div class="login-service-card-body">
+                            <div class="login-service-card-icon ic-citas" aria-hidden="true">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="login-service-card-info">
+                                <div class="login-service-card-title">Citas médicas</div>
+                                <div class="login-service-card-desc">Agenda consultas veterinarias fácilmente.</div>
                             </div>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="service-card">
-                        <img src="img/servicio_historial.jpg" class="service-card-img" alt="Historial"
-                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                        <div class="service-card-img-placeholder ph-historial">📋</div>
-                        <div class="service-card-body">
-                            <div class="service-card-icon ic-historial"><i class="fas fa-file-medical"></i></div>
-                            <div class="service-card-info">
-                                <div class="service-card-title">Historial clínico</div>
-                                <div class="service-card-desc">Diagnósticos y recetas en un lugar.</div>
+                    <article class="login-service-card">
+                        <img src="../static/img/servicio_historial.jpg"
+                             class="login-service-card-img"
+                             alt="Historial clínico">
+                        <div class="login-service-card-img-placeholder ph-historial" aria-hidden="true">📋</div>
+                        <div class="login-service-card-body">
+                            <div class="login-service-card-icon ic-historial" aria-hidden="true">
+                                <i class="fas fa-file-medical"></i>
+                            </div>
+                            <div class="login-service-card-info">
+                                <div class="login-service-card-title">Historial clínico</div>
+                                <div class="login-service-card-desc">Diagnósticos y recetas en un lugar.</div>
                             </div>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="service-card">
-                        <img src="img/servicio_tratamiento.jpg" class="service-card-img" alt="Tratamientos"
-                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                        <div class="service-card-img-placeholder ph-tratamiento">💊</div>
-                        <div class="service-card-body">
-                            <div class="service-card-icon ic-tratamiento"><i class="fas fa-pills"></i></div>
-                            <div class="service-card-info">
-                                <div class="service-card-title">Tratamientos</div>
-                                <div class="service-card-desc">Control de medicamentos y dosis.</div>
+                    <article class="login-service-card">
+                        <img src="../static/img/servicio_tratamiento.jpg"
+                             class="login-service-card-img"
+                             alt="Tratamientos">
+                        <div class="login-service-card-img-placeholder ph-tratamiento" aria-hidden="true">💊</div>
+                        <div class="login-service-card-body">
+                            <div class="login-service-card-icon ic-tratamiento" aria-hidden="true">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                            <div class="login-service-card-info">
+                                <div class="login-service-card-title">Tratamientos</div>
+                                <div class="login-service-card-desc">Control de medicamentos y dosis.</div>
                             </div>
                         </div>
-                    </div>
+                    </article>
 
-                    <div class="service-card">
-                        <img src="img/servicio_adopcion.jpg" class="service-card-img" alt="Adopciones"
-                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                        <div class="service-card-img-placeholder ph-adopcion">🐾</div>
-                        <div class="service-card-body">
-                            <div class="service-card-icon ic-adopcion"><i class="fas fa-heart"></i></div>
-                            <div class="service-card-info">
-                                <div class="service-card-title">Adopciones</div>
-                                <div class="service-card-desc">Mascotas rescatadas buscan hogar.</div>
+                    <article class="login-service-card">
+                        <img src="../static/img/servicio_adopcion.jpg"
+                             class="login-service-card-img"
+                             alt="Adopciones">
+                        <div class="login-service-card-img-placeholder ph-adopcion" aria-hidden="true">🐾</div>
+                        <div class="login-service-card-body">
+                            <div class="login-service-card-icon ic-adopcion" aria-hidden="true">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="login-service-card-info">
+                                <div class="login-service-card-title">Adopciones</div>
+                                <div class="login-service-card-desc">Mascotas rescatadas buscan hogar.</div>
                             </div>
                         </div>
-                    </div>
+                    </article>
 
                 </div>
             </div>
         </div>
 
-        <!-- PANEL DERECHO -->
+        <!-- ── PANEL DERECHO — formulario ── -->
         <div class="panel-right">
 
             <div class="form-header">
-                <p class="welcome">Bienvenido de vuelta</p>
-                <h2>Iniciar sesión</h2>
+                <span class="welcome">Bienvenido de vuelta</span>
+                <h1>Iniciar sesión</h1>
                 <p>Accede con tu correo y contraseña registrados.</p>
             </div>
 
-            <div class="divider"><hr><span>Selecciona tu perfil</span><hr></div>
+            <div class="divider" aria-hidden="true">
+                <hr><span>Selecciona tu perfil</span><hr>
+            </div>
 
-            <div class="rol-tabs">
-                <button class="rol-tab active" onclick="seleccionarRol(this,'cliente')">
-                    <i class="fas fa-user"></i>Cliente
+            <div class="rol-tabs" role="group" aria-label="Selección de perfil">
+                <button class="rol-tab active"
+                        type="button"
+                        onclick="seleccionarRol(this, 'cliente')"
+                        aria-pressed="true">
+                    <i class="fas fa-user" aria-hidden="true"></i>Cliente
                 </button>
-                <button class="rol-tab" onclick="seleccionarRol(this,'veterinario')">
-                    <i class="fas fa-user-md"></i>Veterinario
+                <button class="rol-tab"
+                        type="button"
+                        onclick="seleccionarRol(this, 'veterinario')"
+                        aria-pressed="false">
+                    <i class="fas fa-user-md" aria-hidden="true"></i>Veterinario
                 </button>
-                <button class="rol-tab" onclick="seleccionarRol(this,'recepcionista')">
-                    <i class="fas fa-concierge-bell"></i>Recepcionista
+                <button class="rol-tab"
+                        type="button"
+                        onclick="seleccionarRol(this, 'recepcionista')"
+                        aria-pressed="false">
+                    <i class="fas fa-concierge-bell" aria-hidden="true"></i>Recepcionista
                 </button>
-                <button class="rol-tab" onclick="seleccionarRol(this,'administrador')">
-                    <i class="fas fa-user-shield"></i>Administrador
+                <button class="rol-tab"
+                        type="button"
+                        onclick="seleccionarRol(this, 'administrador')"
+                        aria-pressed="false">
+                    <i class="fas fa-user-shield" aria-hidden="true"></i>Administrador
                 </button>
             </div>
             <input type="hidden" id="rolSeleccionado" value="cliente">
 
             <label class="form-label" for="correo">Correo electrónico</label>
             <div class="input-group-custom">
-                <i class="fas fa-envelope input-icon"></i>
-                <input type="email" id="correo" class="form-control-custom" placeholder="tucorreo@ejemplo.com">
+                <i class="fas fa-envelope input-icon" aria-hidden="true"></i>
+                <input type="email"
+                       id="correo"
+                       name="correo"
+                       class="form-control-custom"
+                       placeholder="tucorreo@ejemplo.com"
+                       autocomplete="email"
+                       required>
             </div>
 
             <label class="form-label" for="contrasena">Contraseña</label>
             <div class="input-group-custom">
-                <i class="fas fa-lock input-icon"></i>
-                <input type="password" id="contrasena" class="form-control-custom" placeholder="••••••••">
-                <button class="toggle-password" onclick="togglePassword()" type="button">
-                    <i class="fas fa-eye" id="eyeIcon"></i>
+                <i class="fas fa-lock input-icon" aria-hidden="true"></i>
+                <input type="password"
+                       id="contrasena"
+                       name="contrasena"
+                       class="form-control-custom"
+                       placeholder="••••••••"
+                       autocomplete="current-password"
+                       required>
+                <button class="toggle-password"
+                        type="button"
+                        onclick="togglePassword()"
+                        aria-label="Mostrar u ocultar contraseña">
+                    <i class="fas fa-eye" id="eyeIcon" aria-hidden="true"></i>
                 </button>
             </div>
 
-                    <button class="btn-login" type="button">
-                <i class="fas fa-sign-in-alt"></i>Ingresar
+            <button class="btn-login" type="submit">
+                <i class="fas fa-sign-in-alt" aria-hidden="true"></i>Ingresar
             </button>
 
             <div class="contact-hint">
-                <i class="fas fa-headset"></i>
+                <i class="fas fa-headset" aria-hidden="true"></i>
                 <span>¿Problemas para ingresar? Contacta a <strong>recepción</strong></span>
             </div>
 
         </div>
     </div>
 
-    <script>
-        function seleccionarRol(el, rol) {
-            document.querySelectorAll('.rol-tab').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('rolSeleccionado').value = rol;
-        }
-        function togglePassword() {
-            const input = document.getElementById('contrasena');
-            const icon  = document.getElementById('eyeIcon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('fa-eye','fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('fa-eye-slash','fa-eye');
-            }
-        }
-    </script>
+    <!-- ── Scripts (al final del body) ── -->
+    <script src="../static/js/main.js"></script>
 </body>
 </html>
