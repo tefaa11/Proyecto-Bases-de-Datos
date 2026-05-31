@@ -17,7 +17,7 @@
     const PRODUCTS = [
         {
             id: 1,
-            img: '../static/img/producto1.jpg',
+            img: '/img/producto1.jpg',
             alt: 'Concentrado Pro-Plan',
             category: 'Alimento',
             icon: 'fas fa-drumstick-bite',
@@ -31,7 +31,7 @@
         },
         {
             id: 2,
-            img: '../static/img/producto2.jpg',
+            img: '/img/producto2.jpg',
             alt: 'Shampoo antipulgas',
             category: 'Higiene',
             icon: 'fas fa-soap',
@@ -45,7 +45,7 @@
         },
         {
             id: 3,
-            img: '../static/img/producto3.jpg',
+            img: '/img/producto3.jpg',
             alt: 'Arena sanitaria premium',
             category: 'Higiene',
             icon: 'fas fa-cat',
@@ -59,7 +59,7 @@
         },
         {
             id: 4,
-            img: '../static/img/producto4.jpg',
+            img: '/img/producto4.jpg',
             alt: 'Juguete mordedor',
             category: 'Juguete',
             icon: 'fas fa-bone',
@@ -73,7 +73,7 @@
         },
         {
             id: 5,
-            img: '../static/img/producto5.jpg',
+            img: '/img/producto5.jpg',
             alt: 'Collar ajustable',
             category: 'Accesorio',
             icon: 'fas fa-paw',
@@ -87,7 +87,7 @@
         },
         {
             id: 6,
-            img: '../static/img/producto6.jpg',
+            img: '/img/producto6.jpg',
             alt: 'Snack dental',
             category: 'Cuidado oral',
             icon: 'fas fa-tooth',
@@ -101,7 +101,7 @@
         },
         {
             id: 7,
-            img: '../static/img/producto7.jpg',
+            img: '/img/producto7.jpg',
             alt: 'Suplemento vitamínico',
             category: 'Suplemento',
             icon: 'fas fa-capsules',
@@ -115,7 +115,7 @@
         },
         {
             id: 8,
-            img: '../static/img/producto8.jpg',
+            img: '/img/producto8.jpg',
             alt: 'Cama acolchada',
             category: 'Descanso',
             icon: 'fas fa-bed',
