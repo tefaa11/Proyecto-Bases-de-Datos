@@ -1,18 +1,18 @@
 package com.ternurines.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class Tratamiento {
-    private int idTratamiento;
+    private Integer idTratamiento;
     private int idHistorial;
     private int idMedicamento;
     private String descripcion;
     private String dosis;
-    private Date fechaInicio;
-    private Date fechaFin;
+    private LocalDate fechaInicio;
+    private LocalDate fechaFin;
 
-    public Tratamiento(int idTratamiento, int idHistorial, int idMedicamento, String descripcion, String dosis,
-            Date fechaInicio, Date fechaFin) {
+    public Tratamiento(Integer idTratamiento, int idHistorial, int idMedicamento, String descripcion, String dosis,
+            LocalDate fechaInicio, LocalDate fechaFin) {
         this.idTratamiento = idTratamiento;
         this.idHistorial = idHistorial;
         this.idMedicamento = idMedicamento;
@@ -25,11 +25,11 @@ public class Tratamiento {
     public Tratamiento() {
     }
 
-    public int getIdTratamiento() {
+    public Integer getIdTratamiento() {
         return idTratamiento;
     }
 
-    public void setIdTratamiento(int idTratamiento) {
+    public void setIdTratamiento(Integer idTratamiento) {
         this.idTratamiento = idTratamiento;
     }
 
@@ -65,19 +65,19 @@ public class Tratamiento {
         this.dosis = dosis;
     }
 
-    public Date getFechaInicio() {
+    public LocalDate getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(Date fechaInicio) {
+    public void setFechaInicio(LocalDate fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
-    public Date getFechaFin() {
+    public LocalDate getFechaFin() {
         return fechaFin;
     }
 
-    public void setFechaFin(Date fechaFin) {
+    public void setFechaFin(LocalDate fechaFin) {
         this.fechaFin = fechaFin;
     }
 }

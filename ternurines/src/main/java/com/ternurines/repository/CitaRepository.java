@@ -123,6 +123,34 @@ public class CitaRepository {
         );
     }
 
+    public Cita saveAndReturn(Cita cita) {
+        String sql = """
+                INSERT INTO cita
+                (id_mascota, id_veterinario,
+                 id_recepcionista, fecha,
+                 hora, motivo, estado)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                RETURNING id_cita
+                """;
+
+        Integer idCita = jdbcTemplate.queryForObject(
+                sql,
+                Integer.class,
+                cita.getIdMascota(),
+                cita.getIdVeterinario(),
+                cita.getIdRecepcionista(),
+                cita.getFecha(),
+                cita.getHora(),
+                cita.getMotivo(),
+                cita.getEstado()
+        );
+
+        if (idCita != null) {
+            cita.setIdCita(idCita);
+        }
+        return cita;
+    }
+
     public void update(Cita cita) {
         String sql = """
                 UPDATE cita

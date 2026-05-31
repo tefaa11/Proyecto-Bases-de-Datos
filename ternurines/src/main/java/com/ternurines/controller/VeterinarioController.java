@@ -29,6 +29,13 @@ public class VeterinarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/correo/{correo}")
+    public ResponseEntity<Veterinario> findByCorreo(@PathVariable String correo) {
+        return veterinarioRepository.findByCorreo(correo)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public ResponseEntity<Veterinario> save(@RequestBody Veterinario veterinario) {
         veterinarioRepository.save(veterinario);

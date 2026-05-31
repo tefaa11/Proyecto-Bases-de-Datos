@@ -2,9 +2,13 @@ package com.ternurines.repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.ternurines.model.Adoptante;
@@ -56,6 +60,16 @@ public class AdoptanteRepository {
         return result.stream().findFirst();
     }
 
+    public Optional<Adoptante> findByCorreo(String correo) {
+        String sql = """
+                SELECT *
+                FROM adoptante
+                WHERE correo = ?
+                """;
+        List<Adoptante> result = jdbcTemplate.query(sql, adoptanteMapper, correo);
+        return result.stream().findFirst();
+    }
+
     // INSERT: respeta chk_adoptante_documento (>= 6 chars),
     //         chk_adoptante_nombre (>= 2 chars),
     //         chk_adoptante_correo (formato válido o NULL)
@@ -74,6 +88,31 @@ public class AdoptanteRepository {
                 adoptante.getDireccion(),
                 adoptante.getCorreo()
         );
+    }
+
+    public Adoptante saveAndReturn(Adoptante adoptante) {
+        String sql = """
+                INSERT INTO adoptante
+                (nombre, documento,
+                 telefono, direccion, correo)
+                VALUES (?, ?, ?, ?, ?)
+                """;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, adoptante.getNombre());
+            ps.setString(2, adoptante.getDocumento());
+            ps.setString(3, adoptante.getTelefono());
+            ps.setString(4, adoptante.getDireccion());
+            ps.setString(5, adoptante.getCorreo());
+            return ps;
+        }, keyHolder);
+
+        Number key = keyHolder.getKey();
+        if (key != null) {
+            adoptante.setIdAdoptante(key.intValue());
+        }
+        return adoptante;
     }
 
     public void update(Adoptante adoptante) {

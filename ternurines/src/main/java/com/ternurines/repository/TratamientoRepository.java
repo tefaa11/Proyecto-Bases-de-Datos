@@ -26,9 +26,10 @@ public class TratamientoRepository {
             tratamiento.setIdMedicamento(rs.getInt("id_medicamento"));
             tratamiento.setDescripcion(rs.getString("descripcion"));
             tratamiento.setDosis(rs.getString("dosis"));
-            tratamiento.setFechaInicio(rs.getDate("fecha_inicio"));
+            tratamiento.setFechaInicio(rs.getDate("fecha_inicio").toLocalDate());
             // fecha_fin es nullable (chk_trat_fechas: NULL o >= fecha_inicio)
-            tratamiento.setFechaFin(rs.getDate("fecha_fin"));
+            java.sql.Date fechaFin = rs.getDate("fecha_fin");
+            tratamiento.setFechaFin(fechaFin == null ? null : fechaFin.toLocalDate());
             return tratamiento;
         };
 

@@ -631,6 +631,7 @@
 
 <script>
     let tratCount = 1;
+    let citas = [];
 
     function addTrat() {
         tratCount++;
@@ -692,20 +693,337 @@
         tratCount = rows.length;
     }
 
+    function populateCitas() {
+        return;
+        const select = document.getElementById('select-cita');
+        if (!select) return;
+
+        fetch('/citas')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se pudo cargar la lista de citas.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                citas = Array.isArray(data) ? data : [];
+                select.innerHTML = citas.map(cita => {
+                    const fecha = cita.fecha;
+                    const hora = cita.hora;
+                    return `<option value="${cita.idCita}">Cita #${cita.idCita} — Mascota ${cita.idMascota} — ${fecha} ${hora}</option>`;
+                }).join('');
+            })
+            .catch(error => {
+                console.error(error);
+                select.innerHTML = '<option value="">No se pudieron cargar las citas</option>';
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        populateCitas();
+        const fechaInput = document.getElementById('fecha-atencion');
+        if (fechaInput) {
+            fechaInput.value = new Date().toISOString().split('T')[0];
+        }
+    });
+
     function guardarAtencion() {
         const diagnostico = document.getElementById('diagnostico').value.trim();
         const fecha = document.getElementById('fecha-atencion').value;
-        const cita = document.getElementById('select-cita').value;
+        const citaId = parseInt(document.getElementById('select-cita').value, 10);
 
-        if (!cita || !diagnostico || !fecha) {
+        if (!citaId || !diagnostico || !fecha) {
             alert('Por favor completa la cita, la fecha y el diagnóstico antes de guardar.');
             return;
         }
 
-        const toast = document.getElementById('toast');
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 3500);
+        const cita = citas.find(item => item.idCita === citaId);
+        if (!cita) {
+            alert('Selecciona una cita válida antes de guardar.');
+            return;
+        }
+
+        const historial = {
+            idMascota: cita.idMascota,
+            idVeterinario: cita.idVeterinario,
+            fecha,
+            diagnostico,
+            observaciones: document.getElementById('observaciones').value.trim()
+        };
+
+        fetch('/historiales-medicos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(historial)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se pudo guardar el historial médico.');
+                }
+                return response.json();
+            })
+            .then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3500);
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Error al guardar la atención. Intenta de nuevo.');
+            });
     }
+</script>
+
+<script>
+    (function () {
+        'use strict';
+
+        let sesionVet = null;
+        let citasVet = [];
+        let mascotas = new Map();
+        let medicamentos = [];
+        let servicios = [];
+
+        function todayIso() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        async function fetchJson(url, options) {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                throw new Error(`Error HTTP ${response.status} en ${url}`);
+            }
+            return response.status === 204 ? null : response.json();
+        }
+
+        async function checkVetSession() {
+            const data = await fetchJson('/auth/usuario-actual');
+            if (data.userType !== 'veterinario') {
+                window.location.href = '/login.html';
+                return null;
+            }
+            return data;
+        }
+
+        async function loadCatalogs() {
+            const [meds, servs] = await Promise.all([
+                fetchJson('/medicamentos'),
+                fetchJson('/servicios')
+            ]);
+            medicamentos = Array.isArray(meds) ? meds : [];
+            servicios = Array.isArray(servs) ? servs : [];
+            populateMedicamentoSelects();
+            populateServicioSelects();
+        }
+
+        function populateMedicamentoSelects() {
+            document.querySelectorAll('#tratamiento-list .tratamiento-row select').forEach(select => {
+                const selected = select.value;
+                select.innerHTML = '<option value="">- Seleccionar -</option>' + medicamentos.map(med => {
+                    const descripcion = med.descripcion ? ` - ${med.descripcion}` : '';
+                    return `<option value="${med.idMedicamento}">${med.nombre}${descripcion}</option>`;
+                }).join('');
+                select.value = selected;
+            });
+        }
+
+        function populateServicioSelects() {
+            document.querySelectorAll('.form-grid.cols-3 select').forEach(select => {
+                const selected = select.value;
+                select.innerHTML = '<option value="">- Ninguno -</option>' + servicios.map(servicio => {
+                    const precio = new Intl.NumberFormat('es-CO', {
+                        style: 'currency',
+                        currency: 'COP',
+                        maximumFractionDigits: 0
+                    }).format(servicio.precio);
+                    return `<option value="${servicio.idServicio}">${servicio.nombre} - ${precio}</option>`;
+                }).join('');
+                select.value = selected;
+            });
+        }
+
+        async function loadCitas() {
+            const data = await fetchJson(`/citas/veterinario/${sesionVet.userId}`);
+            const hoy = todayIso();
+            citasVet = (Array.isArray(data) ? data : []).filter(cita => cita.fecha === hoy && cita.estado !== 'Completada');
+
+            await Promise.all(citasVet.map(async cita => {
+                try {
+                    const mascota = await fetchJson(`/mascotas/${cita.idMascota}`);
+                    mascotas.set(cita.idMascota, mascota);
+                } catch (error) {
+                    console.warn('No se pudo cargar la mascota de la cita', cita.idCita, error);
+                }
+            }));
+
+            const select = document.getElementById('select-cita');
+            const params = new URLSearchParams(window.location.search);
+            const citaSeleccionada = params.get('cita');
+
+            if (citasVet.length === 0) {
+                select.innerHTML = '<option value="">No hay citas pendientes para hoy</option>';
+                renderInfoCita(null);
+                return;
+            }
+
+            select.innerHTML = '<option value="">- Selecciona una cita del dia -</option>' + citasVet.map(cita => {
+                const mascota = mascotas.get(cita.idMascota);
+                const nombreMascota = mascota?.nombre || `Mascota ${cita.idMascota}`;
+                const responsable = mascota?.cliente?.nombre || 'Cliente';
+                return `<option value="${cita.idCita}">${cita.hora} - ${nombreMascota} - ${responsable}</option>`;
+            }).join('');
+
+            if (citaSeleccionada) {
+                select.value = citaSeleccionada;
+            }
+            if (!select.value && citasVet.length > 0) {
+                select.value = citasVet[0].idCita;
+            }
+            renderInfoCita(citasVet.find(cita => String(cita.idCita) === String(select.value)));
+        }
+
+        function renderInfoCita(cita) {
+            const chips = document.querySelectorAll('.info-chip strong');
+            if (!cita || chips.length < 4) {
+                chips.forEach(chip => chip.textContent = '-');
+                return;
+            }
+            const mascota = mascotas.get(cita.idMascota);
+            chips[0].textContent = mascota?.nombre || `Mascota ${cita.idMascota}`;
+            chips[1].textContent = `${mascota?.especie || 'N/A'} - ${mascota?.raza || 'N/A'}`;
+            chips[2].textContent = mascota?.cliente?.nombre || 'Cliente desconocido';
+            chips[3].textContent = cita.motivo || 'Consulta general';
+        }
+
+        function collectTratamientos(idHistorial) {
+            return Array.from(document.querySelectorAll('#tratamiento-list .tratamiento-row')).map(row => {
+                const selects = row.querySelectorAll('select');
+                const inputs = row.querySelectorAll('input');
+                return {
+                    idTratamiento: 0,
+                    idHistorial,
+                    idMedicamento: parseInt(selects[0].value, 10),
+                    dosis: inputs[0].value.trim(),
+                    fechaInicio: inputs[1].value,
+                    fechaFin: inputs[2].value || null,
+                    descripcion: inputs[3].value.trim() || 'Tratamiento formulado'
+                };
+            }).filter(t => t.idMedicamento || t.dosis || t.fechaInicio || t.fechaFin || t.descripcion !== 'Tratamiento formulado');
+        }
+
+        function collectServicios() {
+            const ids = Array.from(document.querySelectorAll('.form-grid.cols-3 select'))
+                .map(select => parseInt(select.value, 10))
+                .filter(Boolean);
+            return Array.from(new Set(ids));
+        }
+
+        window.guardarAtencion = async function guardarAtencionConectada() {
+            const diagnostico = document.getElementById('diagnostico').value.trim();
+            const fecha = document.getElementById('fecha-atencion').value;
+            const citaId = parseInt(document.getElementById('select-cita').value, 10);
+            const cita = citasVet.find(item => item.idCita === citaId);
+
+            if (!cita || !diagnostico || !fecha) {
+                alert('Por favor completa la cita, la fecha y el diagnóstico antes de guardar.');
+                return;
+            }
+
+            const historial = {
+                idMascota: cita.idMascota,
+                idVeterinario: cita.idVeterinario,
+                fecha,
+                diagnostico,
+                observaciones: document.getElementById('observaciones').value.trim()
+            };
+
+            const btn = document.querySelector('.btn-save');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+            try {
+                const historialGuardado = await fetchJson('/historiales-medicos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(historial)
+                });
+
+                const tratamientos = collectTratamientos(historialGuardado.idHistorial);
+                if (tratamientos.length === 0 || tratamientos.some(t => !t.idMedicamento || !t.dosis || !t.fechaInicio)) {
+                    throw new Error('Debes formular al menos un medicamento con dosis y fecha de inicio.');
+                }
+
+                const serviciosRealizados = collectServicios();
+                if (serviciosRealizados.length === 0) {
+                    throw new Error('Selecciona al menos un servicio realizado.');
+                }
+
+                await Promise.all(tratamientos.map(tratamiento => fetchJson('/tratamientos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(tratamiento)
+                })));
+
+                await Promise.all(serviciosRealizados.map(idServicio => fetchJson('/cita-servicios', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ idCita: cita.idCita, idServicio })
+                })));
+
+                await fetchJson(`/citas/${cita.idCita}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(Object.assign({}, cita, { estado: 'Completada' }))
+                });
+
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    window.location.href = '/veterinario.html';
+                }, 1600);
+            } catch (error) {
+                console.error(error);
+                alert(error.message || 'Error al guardar la atención. Intenta de nuevo.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Guardar atención';
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                sesionVet = await checkVetSession();
+                if (!sesionVet) return;
+
+                const fechaInput = document.getElementById('fecha-atencion');
+                if (fechaInput) {
+                    fechaInput.value = todayIso();
+                    fechaInput.max = todayIso();
+                }
+
+                await Promise.all([loadCatalogs(), loadCitas()]);
+
+                document.getElementById('select-cita').addEventListener('change', event => {
+                    renderInfoCita(citasVet.find(cita => String(cita.idCita) === String(event.target.value)));
+                });
+
+                const originalAddTrat = window.addTrat;
+                window.addTrat = function addTratConectado() {
+                    originalAddTrat();
+                    populateMedicamentoSelects();
+                    const rows = document.querySelectorAll('#tratamiento-list .tratamiento-row');
+                    const lastInputs = rows[rows.length - 1].querySelectorAll('input');
+                    if (lastInputs[1]) lastInputs[1].value = todayIso();
+                };
+            } catch (error) {
+                console.error(error);
+                alert('No se pudo cargar la pantalla de atención. Verifica tu sesión e intenta de nuevo.');
+            }
+        });
+    })();
 </script>
 
 </body>

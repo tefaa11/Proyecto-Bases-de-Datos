@@ -29,6 +29,13 @@ public class ClienteController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/correo/{correo}")
+    public ResponseEntity<Cliente> findByCorreo(@PathVariable String correo) {
+        return clienteRepository.findByCorreo(correo)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public ResponseEntity<Cliente> save(@RequestBody Cliente cliente) {
         clienteRepository.save(cliente);

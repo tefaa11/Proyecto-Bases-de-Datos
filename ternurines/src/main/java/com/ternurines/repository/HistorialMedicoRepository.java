@@ -59,6 +59,29 @@ public class HistorialMedicoRepository {
         );
     }
 
+    public HistorialMedico saveAndReturn(HistorialMedico historialMedico) {
+        String sql = """
+                INSERT INTO historial_medico (id_mascota, id_veterinario, fecha, diagnostico, observaciones)
+                VALUES (?, ?, ?, ?, ?)
+                RETURNING id_historial
+                """;
+
+        Integer idHistorial = jdbcTemplate.queryForObject(
+                sql,
+                Integer.class,
+                historialMedico.getIdMascota(),
+                historialMedico.getIdVeterinario(),
+                historialMedico.getFecha() != null ? Date.valueOf(historialMedico.getFecha()) : null,
+                historialMedico.getDiagnostico(),
+                historialMedico.getObservaciones()
+        );
+
+        if (idHistorial != null) {
+            historialMedico.setIdHistorial(idHistorial);
+        }
+        return historialMedico;
+    }
+
     public int update(HistorialMedico historialMedico) {
         String sql = """
                 UPDATE historial_medico

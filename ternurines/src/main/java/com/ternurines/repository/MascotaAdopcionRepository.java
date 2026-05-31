@@ -47,6 +47,16 @@ public class MascotaAdopcionRepository {
         return resultado.stream().findFirst();
     }
 
+    public List<MascotaAdopcion> findDisponibles() {
+        String sql = """
+                SELECT *
+                FROM mascota_adopcion
+                WHERE estado_adopcion = 'Disponible'
+                ORDER BY fecha_ingreso DESC
+                """;
+        return jdbcTemplate.query(sql, this::mapRow);
+    }
+
     public int save(MascotaAdopcion mascotaAdopcion) {
         String sql = """
                 INSERT INTO mascota_adopcion
@@ -90,5 +100,14 @@ public class MascotaAdopcionRepository {
     public int delete(int idMascotaAdopcion) {
         String sql = "DELETE FROM mascota_adopcion WHERE id_mascota_adopcion = ?";
         return jdbcTemplate.update(sql, idMascotaAdopcion);
+    }
+
+    public int actualizarEstado(int idMascotaAdopcion, String estado) {
+        String sql = """
+                UPDATE mascota_adopcion
+                SET estado_adopcion = ?
+                WHERE id_mascota_adopcion = ?
+                """;
+        return jdbcTemplate.update(sql, estado, idMascotaAdopcion);
     }
 }

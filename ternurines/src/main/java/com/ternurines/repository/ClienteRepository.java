@@ -64,6 +64,20 @@ public class ClienteRepository {
                 .findFirst();
     }
 
+    public Optional<Cliente> findByCorreo(String correo) {
+        String sql = """
+                SELECT *
+                FROM cliente
+                WHERE correo = ?
+                """;
+        List<Cliente> clientes =
+                jdbcTemplate.query(
+                        sql,
+                        clienteMapper,
+                        correo
+                );
+        return clientes.stream().findFirst();
+    }
 
     public void save(Cliente cliente) {
         String sql = """

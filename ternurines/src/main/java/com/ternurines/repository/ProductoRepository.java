@@ -103,14 +103,14 @@ public class ProductoRepository {
     }
 
     // Descuenta unidades del stock al realizar una venta
-    public void reducirStock(int idProducto, int cantidad) {
+    public int reducirStock(int idProducto, int cantidad) {
         String sql = """
                 UPDATE producto
                 SET stock = stock - ?
                 WHERE id_producto = ?
                   AND stock >= ?
                 """;
-        jdbcTemplate.update(sql, cantidad, idProducto, cantidad);
+        return jdbcTemplate.update(sql, cantidad, idProducto, cantidad);
     }
 
     public void deleteById(int id) {

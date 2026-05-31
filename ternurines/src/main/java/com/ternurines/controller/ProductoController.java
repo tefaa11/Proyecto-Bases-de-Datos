@@ -29,6 +29,26 @@ public class ProductoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PostMapping("/{id}/comprar")
+    public ResponseEntity<?> comprar(@PathVariable int id) {
+        return productoRepository.findById(id)
+                .map(producto -> {
+                    if (producto.getStock() <= 0) {
+                        return ResponseEntity.badRequest().build();
+                    }
+
+                    int rowsAffected = productoRepository.reducirStock(id, 1);
+                    if (rowsAffected == 0) {
+                        return ResponseEntity.badRequest().build();
+                    }
+
+                    return productoRepository.findById(id)
+                            .map(ResponseEntity::ok)
+                            .orElse(ResponseEntity.notFound().build());
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public ResponseEntity<Producto> save(@RequestBody Producto producto) {
         productoRepository.save(producto);

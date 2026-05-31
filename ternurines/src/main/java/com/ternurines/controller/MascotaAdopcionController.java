@@ -22,6 +22,11 @@ public class MascotaAdopcionController {
         return ResponseEntity.ok(mascotaAdopcionRepository.findAll());
     }
 
+    @GetMapping("/disponibles")
+    public ResponseEntity<List<MascotaAdopcion>> findDisponibles() {
+        return ResponseEntity.ok(mascotaAdopcionRepository.findDisponibles());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<MascotaAdopcion> findById(@PathVariable int id) {
 

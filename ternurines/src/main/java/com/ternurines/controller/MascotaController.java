@@ -32,6 +32,11 @@ public class MascotaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/cliente/{idCliente}")
+    public ResponseEntity<List<Mascota>> findByCliente(@PathVariable int idCliente) {
+        return ResponseEntity.ok(mascotaRepository.findByCliente(idCliente));
+    }
+
     // POST
     @PostMapping
     public ResponseEntity<Mascota> save(@RequestBody Mascota mascota) {

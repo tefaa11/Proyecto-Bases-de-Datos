@@ -34,7 +34,7 @@ public class HistorialMedicoController {
     public ResponseEntity<HistorialMedico> save(
             @RequestBody HistorialMedico historialMedico) {
 
-        historialMedicoRepository.save(historialMedico);
+        historialMedicoRepository.saveAndReturn(historialMedico);
 
         return ResponseEntity.status(201).body(historialMedico);
     }

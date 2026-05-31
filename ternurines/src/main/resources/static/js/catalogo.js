@@ -11,123 +11,40 @@
 
     /* ══════════════════════════════════════════════
        DATOS DE PRODUCTOS
-       Agrega, edita o elimina objetos de este array
-       para gestionar el catálogo sin tocar el HTML.
+       Los productos ahora se obtienen desde el backend y el catálogo se
+       actualiza dinámicamente para reflejar stock real y compras.
     ══════════════════════════════════════════════ */
-    const PRODUCTS = [
-        {
-            id: 1,
-            img: '/img/producto1.jpg',
-            alt: 'Concentrado Pro-Plan',
-            category: 'Alimento',
-            icon: 'fas fa-drumstick-bite',
-            title: 'Concentrado Pro-Plan 10 kg',
-            desc: 'Alimento balanceado para perros adultos, ideal para nutrición diaria y mantenimiento saludable.',
-            meta: [
-                { label: 'Presentación', value: 'Bolsa 10 kg' },
-                { label: 'Stock',        value: '50 unidades' },
-            ],
-            price: '$60.000',
-        },
-        {
-            id: 2,
-            img: '/img/producto2.jpg',
-            alt: 'Shampoo antipulgas',
-            category: 'Higiene',
-            icon: 'fas fa-soap',
-            title: 'Shampoo antipulgas 250 ml',
-            desc: 'Limpieza suave con fórmula especializada para ayudar al control de pulgas y mantener el pelaje limpio.',
-            meta: [
-                { label: 'Contenido', value: '250 ml' },
-                { label: 'Stock',     value: '20 unidades' },
-            ],
-            price: '$15.000',
-        },
-        {
-            id: 3,
-            img: '/img/producto3.jpg',
-            alt: 'Arena sanitaria premium',
-            category: 'Higiene',
-            icon: 'fas fa-cat',
-            title: 'Arena sanitaria premium',
-            desc: 'Arena aglomerante de alta absorción, pensada para reducir olores y facilitar la limpieza diaria.',
-            meta: [
-                { label: 'Presentación', value: '8 kg' },
-                { label: 'Stock',        value: '34 unidades' },
-            ],
-            price: '$28.000',
-        },
-        {
-            id: 4,
-            img: '/img/producto4.jpg',
-            alt: 'Juguete mordedor',
-            category: 'Juguete',
-            icon: 'fas fa-bone',
-            title: 'Mordedor resistente',
-            desc: 'Juguete ideal para entretenimiento, estimulación y cuidado dental en perros medianos y grandes.',
-            meta: [
-                { label: 'Material', value: 'Caucho flexible' },
-                { label: 'Stock',    value: '18 unidades' },
-            ],
-            price: '$22.000',
-        },
-        {
-            id: 5,
-            img: '/img/producto5.jpg',
-            alt: 'Collar ajustable',
-            category: 'Accesorio',
-            icon: 'fas fa-paw',
-            title: 'Collar ajustable clásico',
-            desc: 'Collar cómodo y resistente con ajuste seguro para el uso diario en paseos y actividades al aire libre.',
-            meta: [
-                { label: 'Talla', value: 'Mediana' },
-                { label: 'Stock', value: '26 unidades' },
-            ],
-            price: '$18.000',
-        },
-        {
-            id: 6,
-            img: '/img/producto6.jpg',
-            alt: 'Snack dental',
-            category: 'Cuidado oral',
-            icon: 'fas fa-tooth',
-            title: 'Snack dental premium',
-            desc: 'Premio funcional que ayuda a la limpieza dental y al control del mal aliento en perros adultos.',
-            meta: [
-                { label: 'Contenido', value: 'Paquete x 20' },
-                { label: 'Stock',     value: '40 unidades' },
-            ],
-            price: '$19.000',
-        },
-        {
-            id: 7,
-            img: '/img/producto7.jpg',
-            alt: 'Suplemento vitamínico',
-            category: 'Suplemento',
-            icon: 'fas fa-capsules',
-            title: 'Suplemento vitamínico',
-            desc: 'Apoyo nutricional para fortalecer defensas, energía y vitalidad en distintas etapas de vida.',
-            meta: [
-                { label: 'Presentación', value: 'Frasco x 60' },
-                { label: 'Stock',        value: '15 unidades' },
-            ],
-            price: '$32.000',
-        },
-        {
-            id: 8,
-            img: '/img/producto8.jpg',
-            alt: 'Cama acolchada',
-            category: 'Descanso',
-            icon: 'fas fa-bed',
-            title: 'Cama acolchada suave',
-            desc: 'Espacio cómodo y acogedor para el descanso diario de mascotas pequeñas y medianas.',
-            meta: [
-                { label: 'Tamaño', value: '70 x 50 cm' },
-                { label: 'Stock',  value: '12 unidades' },
-            ],
-            price: '$75.000',
-        },
-    ];
+    let PRODUCTS = [];
+
+    function loadProducts() {
+        return fetch('/productos')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se pudo cargar el catálogo.');
+                }
+                return response.json();
+            })
+            .then(products => {
+                PRODUCTS = products.map(producto => ({
+                    id: producto.idProducto,
+                    img: '/img/producto1.jpg',
+                    alt: producto.nombre,
+                    category: producto.descripcion || 'Producto',
+                    icon: 'fas fa-box-open',
+                    title: producto.nombre,
+                    desc: producto.descripcion || 'Descripción no disponible.',
+                    meta: [
+                        { label: 'Stock', value: `${producto.stock} unidades` },
+                        { label: 'Vence', value: producto.fechaVencimiento || 'N/A' }
+                    ],
+                    price: new Intl.NumberFormat('es-CO', {
+                        style: 'currency',
+                        currency: 'COP'
+                    }).format(producto.precio).replace('COP', '$'),
+                    stock: producto.stock
+                }));
+            });
+        }
 
     /* ══════════════════════════════════════════════
        ESTADO
@@ -269,17 +186,45 @@
         const grid = document.getElementById('catalog-grid');
         if (!grid) return;
 
-        grid.addEventListener('click', function (e) {
+        grid.addEventListener('click', async function (e) {
             const btn = e.target.closest('.catalog-buy-btn');
             if (!btn) return;
 
-            const id      = parseInt(btn.dataset.id, 10);
+            const id = parseInt(btn.dataset.id, 10);
             const product = PRODUCTS.find(p => p.id === id);
             if (!product) return;
 
-            // TODO: conectar con tu lógica de carrito / WhatsApp / pedido
-            console.log('[Ternurines] Producto seleccionado:', product);
-            alert(`¡Listo! Seleccionaste:\n"${product.title}" — ${product.price}`);
+            try {
+                const response = await fetch(`/productos/${id}/comprar`, {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    if (response.status === 400) {
+                        alert('No hay stock disponible para este producto.');
+                        return;
+                    }
+                    throw new Error('Error al procesar la compra.');
+                }
+
+                const updatedProducto = await response.json();
+                PRODUCTS = PRODUCTS.map(p => p.id === updatedProducto.idProducto
+                    ? Object.assign({}, p, {
+                        stock: updatedProducto.stock,
+                        meta: [
+                            { label: 'Stock', value: `${updatedProducto.stock} unidades` },
+                            { label: 'Vence', value: updatedProducto.fechaVencimiento || 'N/A' }
+                        ]
+                    })
+                    : p
+                );
+
+                render();
+                alert(`Compra registrada correctamente para ${product.title}.`);
+            } catch (error) {
+                console.error('Compra fallida:', error);
+                alert('No se pudo completar la compra. Intenta de nuevo.');
+            }
         });
     }
 
@@ -287,7 +232,16 @@
        INIT
     ══════════════════════════════════════════════ */
     document.addEventListener('DOMContentLoaded', function () {
-        render();
+        loadProducts()
+            .then(render)
+            .catch(error => {
+                console.error(error);
+                const grid = document.getElementById('catalog-grid');
+                if (grid) {
+                    grid.innerHTML = '<p class="catalog-error">No se pudo cargar el catálogo de productos.</p>';
+                }
+            });
+
         initChips();
         initSearch();
         initResetEmpty();

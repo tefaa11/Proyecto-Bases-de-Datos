@@ -78,6 +78,22 @@ public class MascotaRepository {
                 .findFirst();
     }
 
+    public List<Mascota> findByCliente(int idCliente) {
+        String sql = """
+                SELECT m.*,
+                       c.nombre AS nombre_cliente
+                FROM mascota m
+                JOIN cliente c
+                ON m.id_cliente = c.id_cliente
+                WHERE m.id_cliente = ?
+                """;
+        return jdbcTemplate.query(
+                sql,
+                mascotaMapper,
+                idCliente
+        );
+    }
+
     public void save(Mascota mascota) {
         String sql = """
                 INSERT INTO mascota
