@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Ternurines — Registrar Atención</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/jirafa.png">
+
+    <style>
+        :root {
+            --cream: #fbede0;
+            --salmon: #fac3a5;
+            --terracota: #e48368;
+            --brown: #b88566;
+            --olive: #ac9f7c;
+            --white: #ffffff;
+            --dark: #3d2b1f;
+            --text-mid: #7a5c4a;
+            --text-light: #b8977e;
+            --shadow: rgba(184,133,102,0.16);
+            --panel-bg1: #fdf3ea;
+            --panel-bg2: #f5dece;
+            --success: #6ea85f;
+            --warning: #d4953a;
+            --navbar-h: 64px;
+            --radius: 20px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            min-height: 100%;
+            font-family: 'Nunito Sans', sans-serif;
+            background: linear-gradient(180deg, #f8eee6 0%, #fbede0 100%);
+            color: var(--dark);
+        }
+
+        body { padding-top: var(--navbar-h); }
+
+        /* NAVBAR */
+        .navbar-ternurines {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--navbar-h);
+            background: var(--dark);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 36px;
+            z-index: 100;
+        }
+
+        .navbar-logo-fallback {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 1.7rem;
+            color: var(--white);
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+
+        .navbar-logo-fallback span { color: var(--terracota); }
+
+        .navbar-role {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: rgba(255,255,255,0.75);
+            font-size: 0.86rem;
+            font-weight: 600;
+        }
+
+        .navbar-role-badge {
+            background: var(--terracota);
+            color: var(--white);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: .75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        /* LAYOUT */
+        .page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 28px;
+        }
+
+        /* BACK LINK */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-mid);
+            font-size: .9rem;
+            font-weight: 700;
+            text-decoration: none;
+            margin-bottom: 22px;
+            transition: color .18s;
+        }
+
+        .back-link:hover { color: var(--terracota); }
+
+        /* PAGE HEADER */
+        .page-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .page-header-icon {
+            width: 56px; height: 56px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--terracota), #d26d56);
+            display: grid;
+            place-items: center;
+            color: var(--white);
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(228,131,104,.3);
+        }
+
+        .page-header h1 {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 900;
+            font-size: 1.9rem;
+            line-height: 1.05;
+        }
+
+        .page-header h1 span { color: var(--terracota); }
+        .page-header p { color: var(--text-light); font-size: .92rem; margin-top: 4px; }
+
+        /* CARDS */
+        .card {
+            background: rgba(255,255,255,.88);
+            border: 1px solid rgba(184,133,102,.18);
+            border-radius: var(--radius);
+            box-shadow: 0 18px 42px var(--shadow);
+            padding: 26px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .card-title-icon {
+            width: 38px; height: 38px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            color: var(--white);
+            font-size: .88rem;
+            flex-shrink: 0;
+        }
+
+        .ct-orange { background: linear-gradient(135deg, var(--terracota), #d26d56); }
+        .ct-green  { background: linear-gradient(135deg, var(--success), #509445); }
+        .ct-brown  { background: linear-gradient(135deg, var(--brown), #9f6f53); }
+        .ct-olive  { background: linear-gradient(135deg, var(--olive), #8d8162); }
+
+        .card-title h2 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 900;
+        }
+
+        .card-title p { font-size: .83rem; color: var(--text-light); margin-top: 1px; }
+
+        /* FORM GRID */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .col-span-2 { grid-column: span 2; }
+        .col-span-3 { grid-column: span 3; }
+
+        .field { display: flex; flex-direction: column; gap: 6px; }
+
+        .field label {
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--text-mid);
+            letter-spacing: .02em;
+        }
+
+        .field label .req { color: var(--terracota); margin-left: 2px; }
+
+        .field input,
+        .field select,
+        .field textarea {
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1.5px solid rgba(184,133,102,.28);
+            background: var(--cream);
+            font-family: 'Nunito Sans', sans-serif;
+            font-size: .93rem;
+            color: var(--dark);
+            transition: border-color .18s, box-shadow .18s;
+            outline: none;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: var(--terracota);
+            box-shadow: 0 0 0 3px rgba(228,131,104,.13);
+            background: #fff;
+        }
+
+        .field textarea { resize: vertical; min-height: 90px; line-height: 1.55; }
+
+        .field select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23b8977e' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+        /* TRATAMIENTO DINÁMICO */
+        .tratamiento-list { display: grid; gap: 14px; }
+
+        .tratamiento-row {
+            padding: 16px;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #fff, #fdf7f2);
+            border: 1px solid rgba(184,133,102,.15);
+            position: relative;
+        }
+
+        .tratamiento-row .trat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .trat-num {
+            font-family: 'Nunito', sans-serif;
+            font-size: .82rem;
+            font-weight: 800;
+            color: var(--terracota);
+            background: rgba(228,131,104,.1);
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .btn-remove-trat {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: .9rem;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: color .15s, background .15s;
+        }
+
+        .btn-remove-trat:hover { color: #c0392b; background: rgba(192,57,43,.08); }
+
+        .trat-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn-add-trat {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(228,131,104,.1);
+            color: var(--terracota);
+            border: 1.5px dashed rgba(228,131,104,.4);
+            border-radius: 14px;
+            padding: 12px 18px;
+            font-family: 'Nunito', sans-serif;
+            font-size: .9rem;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: background .18s, border-color .18s;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-add-trat:hover {
+            background: rgba(228,131,104,.18);
+            border-color: var(--terracota);
+        }
+
+        /* INFO BOX (cita asociada) */
+        .info-box {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .info-chip {
+            padding: 12px 14px;
+            border-radius: 14px;
+            background: var(--cream);
+            border: 1px solid rgba(184,133,102,.14);
+        }
+
+        .info-chip small { display: block; color: var(--text-light); font-size: .77rem; margin-bottom: 3px; }
+        .info-chip strong { font-family: 'Nunito', sans-serif; font-size: .95rem; color: var(--dark); }
+
+        /* DIVIDER */
+        .divider {
+            height: 1px;
+            background: rgba(184,133,102,.15);
+            margin: 8px 0 20px;
+        }
+
+        /* ACTIONS */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .btn-cancel {
+            padding: 13px 24px;
+            border-radius: 16px;
+            border: 1.5px solid rgba(184,133,102,.3);
+            background: transparent;
+            color: var(--text-mid);
+            font-family: 'Nunito', sans-serif;
+            font-size: .95rem;
+            font-weight: 800;
+            cursor: pointer;
+            text-decoration: none;
+            transition: border-color .18s, background .18s;
+        }
+
+        .btn-cancel:hover { background: rgba(184,133,102,.08); border-color: var(--brown); }
+
+        .btn-save {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 13px 28px;
+            border-radius: 16px;
+            border: none;
+            background: var(--terracota);
+            color: var(--white);
+            font-family: 'Nunito', sans-serif;
+            font-size: .95rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(228,131,104,.35);
+            transition: background .18s, transform .15s, box-shadow .18s;
+        }
+
+        .btn-save:hover {
+            background: #d26d56;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(228,131,104,.45);
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 28px; right: 28px;
+            background: var(--dark);
+            color: var(--white);
+            padding: 16px 22px;
+            border-radius: 16px;
+            font-family: 'Nunito', sans-serif;
+            font-size: .92rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 12px 32px rgba(0,0,0,.18);
+            transform: translateY(80px);
+            opacity: 0;
+            transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+            z-index: 999;
+        }
+
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast i { color: var(--success); font-size: 1rem; }
+
+        /* RESPONSIVE */
+        @media (max-width: 760px) {
+            .page { padding: 18px; }
+            .navbar-ternurines { padding: 0 18px; }
+            .form-grid,
+            .form-grid.cols-3,
+            .trat-grid,
+            .info-box { grid-template-columns: 1fr; }
+            .col-span-2, .col-span-3 { grid-column: span 1; }
+            .form-actions { flex-direction: column-reverse; }
+            .btn-cancel, .btn-save { width: 100%; justify-content: center; }
+        }
+
+        @media (max-width: 600px) {
+            .page-header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar-ternurines">
+    <a href="index.html" style="text-decoration:none;">
+        <img
+            src="img/navbar_logo.png"
+            style="height:46px;object-fit:contain;"
+            onerror="this.style.display='none';document.getElementById('nf').style.display='block';"
+            alt="Ternurines"
+        >
+        <span id="nf" style="display:none;" class="navbar-logo-fallback">
+            <span>Ternu</span>rines
+        </span>
+    </a>
+    <div class="navbar-role">
+        <i class="fas fa-stethoscope"></i>
+        Portal veterinario
+        <span class="navbar-role-badge">Vet</span>
+    </div>
+</nav>
+
+<main class="page">
+
+    <a href="veterinario.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Volver al panel
+    </a>
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <div class="page-header-icon">
+            <i class="fas fa-notes-medical"></i>
+        </div>
+        <div>
+            <h1>Registrar <span>atención</span></h1>
+            <p>Completa el historial médico, diagnóstico y tratamiento del paciente.</p>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 1: CITA ASOCIADA -->
+    <div class="card">
+        <div class="card-title">
+            <div class="card-title-icon ct-orange"><i class="fas fa-calendar-check"></i></div>
+            <div>
+                <h2>Cita asociada</h2>
+                <p>Datos de la cita que está siendo atendida.</p>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-chip">
+                <small>Mascota</small>
+                <strong>Firulais</strong>
+            </div>
+            <div class="info-chip">
+                <small>Especie · Raza</small>
+                <strong>Perro · Labrador</strong>
+            </div>
+            <div class="info-chip">
+                <small>Dueño</small>
+                <strong>Samuel Delgadillo</strong>
+            </div>
+            <div class="info-chip">
+                <small>Motivo de cita</small>
+                <strong>Chequeo anual</strong>
+            </div>
+        </div>
+
+        <div class="divider" style="margin-top:16px;"></div>
+
+        <div class="form-grid">
+            <div class="field">
+                <label>Seleccionar cita <span class="req">*</span></label>
+                <select id="select-cita">
+                    <option value="">— Selecciona una cita del día —</option>
+                    <option value="1" selected>09:00 AM · Firulais (Labrador) — Samuel Delgadillo</option>
+                    <option value="2">10:00 AM · Michi (Siamés) — Laura Ramos</option>
+                    <option value="3">11:30 AM · Rocky (Golden Retriever) — Carlos Mendoza</option>
+                    <option value="4">02:00 PM · Luna (Beagle) — Valentina Torres</option>
+                    <option value="5">03:30 PM · Toby (Poodle) — Andrés Jiménez</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Fecha de atención <span class="req">*</span></label>
+                <input type="date" id="fecha-atencion" value="2025-05-28">
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 2: HISTORIAL MÉDICO -->
+    <div class="card">
+        <div class="card-title">
+            <div class="card-title-icon ct-green"><i class="fas fa-clipboard-list"></i></div>
+            <div>
+                <h2>Historial médico</h2>
+                <p>Diagnóstico y observaciones clínicas del paciente.</p>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <div class="field col-span-2">
+                <label>Diagnóstico <span class="req">*</span></label>
+                <textarea id="diagnostico" placeholder="Describe el diagnóstico clínico del paciente..."></textarea>
+            </div>
+
+            <div class="field col-span-2">
+                <label>Observaciones</label>
+                <textarea id="observaciones" placeholder="Notas adicionales, recomendaciones de cuidado, seguimiento, etc." style="min-height:75px;"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN 3: TRATAMIENTO -->
+    <div class="card">
+        <div class="card-title">
+            <div class="card-title-icon ct-brown"><i class="fas fa-pills"></i></div>
+            <div>
+                <h2>Tratamiento</h2>
+                <p>Medicamentos, dosis y duración prescritos en esta atención.</p>
+            </div>
+        </div>
+
+        <div class="tratamiento-list" id="tratamiento-list">
+            <!-- fila inicial -->
+            <div class="tratamiento-row" data-idx="1">
+                <div class="trat-header">
+                    <span class="trat-num">Medicamento #1</span>
+                    <button class="btn-remove-trat" onclick="removeTrat(this)" title="Quitar">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="trat-grid">
+                    <div class="field">
+                        <label>Medicamento <span class="req">*</span></label>
+                        <select>
+                            <option value="">— Seleccionar —</option>
+                            <option value="1">Amoxicilina · Antibiótico</option>
+                            <option value="2">Meloxicam · Antiinflamatorio</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Dosis <span class="req">*</span></label>
+                        <input type="text" placeholder="Ej: 1 pastilla cada 12h">
+                    </div>
+                    <div class="field">
+                        <label>Fecha inicio <span class="req">*</span></label>
+                        <input type="date" value="2025-05-28">
+                    </div>
+                    <div class="field">
+                        <label>Fecha fin</label>
+                        <input type="date">
+                    </div>
+                    <div class="field" style="grid-column: span 4;">
+                        <label>Descripción / instrucciones</label>
+                        <input type="text" placeholder="Ej: Administrar con comida, evitar exposición solar...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-add-trat" onclick="addTrat()">
+            <i class="fas fa-plus"></i> Agregar otro medicamento
+        </button>
+    </div>
+
+    <!-- SECCIÓN 4: SERVICIOS -->
+    <div class="card">
+        <div class="card-title">
+            <div class="card-title-icon ct-olive"><i class="fas fa-concierge-bell"></i></div>
+            <div>
+                <h2>Servicios realizados</h2>
+                <p>Selecciona los servicios aplicados en esta atención (tabla cita_servicio).</p>
+            </div>
+        </div>
+
+        <div class="form-grid cols-3">
+            <div class="field">
+                <label>Servicio 1</label>
+                <select>
+                    <option value="">— Ninguno —</option>
+                    <option value="1" selected>Consulta General · $30.00</option>
+                    <option value="2">Vacunación · $20.00</option>
+                    <option value="3">Cirugía Menor · $150.00</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Servicio 2</label>
+                <select>
+                    <option value="">— Ninguno —</option>
+                    <option value="1">Consulta General · $30.00</option>
+                    <option value="2">Vacunación · $20.00</option>
+                    <option value="3">Cirugía Menor · $150.00</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Servicio 3</label>
+                <select>
+                    <option value="">— Ninguno —</option>
+                    <option value="1">Consulta General · $30.00</option>
+                    <option value="2">Vacunación · $20.00</option>
+                    <option value="3">Cirugía Menor · $150.00</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCIONES -->
+    <div class="form-actions">
+        <a href="veterinario.html" class="btn-cancel">Cancelar</a>
+        <button class="btn-save" onclick="guardarAtencion()">
+            <i class="fas fa-save"></i> Guardar atención
+        </button>
+    </div>
+
+</main>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    Atención registrada correctamente en el historial médico.
+</div>
+
+<script>
+    let tratCount = 1;
+
+    function addTrat() {
+        tratCount++;
+        const list = document.getElementById('tratamiento-list');
+        const div = document.createElement('div');
+        div.className = 'tratamiento-row';
+        div.dataset.idx = tratCount;
+        div.innerHTML = `
+            <div class="trat-header">
+                <span class="trat-num">Medicamento #${tratCount}</span>
+                <button class="btn-remove-trat" onclick="removeTrat(this)" title="Quitar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="trat-grid">
+                <div class="field">
+                    <label>Medicamento <span class="req">*</span></label>
+                    <select>
+                        <option value="">— Seleccionar —</option>
+                        <option value="1">Amoxicilina · Antibiótico</option>
+                        <option value="2">Meloxicam · Antiinflamatorio</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Dosis <span class="req">*</span></label>
+                    <input type="text" placeholder="Ej: 1 pastilla cada 12h">
+                </div>
+                <div class="field">
+                    <label>Fecha inicio <span class="req">*</span></label>
+                    <input type="date">
+                </div>
+                <div class="field">
+                    <label>Fecha fin</label>
+                    <input type="date">
+                </div>
+                <div class="field" style="grid-column: span 4;">
+                    <label>Descripción / instrucciones</label>
+                    <input type="text" placeholder="Ej: Administrar con comida...">
+                </div>
+            </div>
+        `;
+        list.appendChild(div);
+        renumberTrats();
+    }
+
+    function removeTrat(btn) {
+        const row = btn.closest('.tratamiento-row');
+        const list = document.getElementById('tratamiento-list');
+        if (list.children.length === 1) return; // mínimo 1
+        row.remove();
+        renumberTrats();
+    }
+
+    function renumberTrats() {
+        const rows = document.querySelectorAll('.tratamiento-row');
+        rows.forEach((row, i) => {
+            row.querySelector('.trat-num').textContent = `Medicamento #${i + 1}`;
+        });
+        tratCount = rows.length;
+    }
+
+    function guardarAtencion() {
+        const diagnostico = document.getElementById('diagnostico').value.trim();
+        const fecha = document.getElementById('fecha-atencion').value;
+        const cita = document.getElementById('select-cita').value;
+
+        if (!cita || !diagnostico || !fecha) {
+            alert('Por favor completa la cita, la fecha y el diagnóstico antes de guardar.');
+            return;
+        }
+
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+</script>
+
+</body>
+</html>
